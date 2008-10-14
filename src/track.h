@@ -21,7 +21,6 @@ class track
 	int m_play_count;      /**< The total track plays counter */
 
 	public:
-	
 	/**
 	 * This is the constructor from a libmtp track
 	 *

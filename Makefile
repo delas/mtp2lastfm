@@ -16,7 +16,7 @@ DOXYGEN = @doxygen
 TEST    = @if test
 
 # Object files
-BASE    := main track device scrobbler
+BASE    := main track device scrobbler md5
 OBJECTS := $(addprefix $(OBJ_DIR)/, $(BASE))
 
 
