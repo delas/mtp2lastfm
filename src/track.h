@@ -62,6 +62,36 @@ class track
 	 * @return the track length
 	 */
 	inline int getLength() const { return m_sec_length; };
+
+	/**
+	 * This method return the number of times the track has been played
+	 *
+	 * @return the total play counter
+	 */
+	inline int getPlayCount() const { return m_play_count; };
+
+	/**
+	 * This method sets the number of times the track has been played
+	 *
+	 * @param total_play_count the total number of plays of this track
+	 */
+	void setPlayCount(int total_play_count);
+
+	/**
+	 * Equal operator overloading
+	 *
+	 * @return true if the tracks have the same title and artist, false
+	 *         otherwise
+	 */
+	bool operator==(const track& other);
+
+	/**
+	 * Not equal operator overloading
+	 *
+	 * @return false if the tracks have the same title and artist, true
+	 *         otherwise
+	 */
+	bool operator!=(const track& other);
 };
 
 #endif // TRACK_H

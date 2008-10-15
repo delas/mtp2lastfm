@@ -18,3 +18,27 @@ track::track(LIBMTP_track_t* track)
 	m_sec_length = track->duration / 1000; /* duration is in milliseconds */
 	m_play_count = track->usecount;
 }
+
+
+void track::setPlayCount(int total_play_count)
+{
+	if (total_play_count > 0)
+	{
+		m_play_count = total_play_count;
+	}
+}
+
+
+bool track::operator==(const track& other)
+{
+	bool result;
+	result = (m_track_title == other.getTitle() &&
+	          m_track_artist == other.getArtist());
+	return result;
+}
+
+
+bool track::operator!=(const track& other)
+{
+	return !(*this == other);
+}

@@ -8,7 +8,7 @@ OUTFILE = mtp2lastfm
 CC      = @g++
 LD      = @g++
 CFLAGS  = -Wall -g
-LDFLAGS = -Wall -g -lmtp
+LDFLAGS = -Wall -g -lmtp -lcurl
 
 # Extra commands
 ECHO    = @echo
@@ -16,7 +16,7 @@ DOXYGEN = @doxygen
 TEST    = @if test
 
 # Object files
-BASE    := main track device scrobbler md5
+BASE    := main track device scrobbler md5 utils
 OBJECTS := $(addprefix $(OBJ_DIR)/, $(BASE))
 
 
