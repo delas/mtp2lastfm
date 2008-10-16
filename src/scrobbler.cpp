@@ -158,9 +158,15 @@ int scrobbler::scrobble()
 		if (scrobbled_items == LASTFM_MAX_TRACK_PER_SCROBBLE - 1)
 		{
 			/* reached the max number of scrobbleable track */
+			string out;
 			std::cout << "Scrobbling...\n";
 			std::cout.flush();
-			std::cout << httpRequest(m_session_url, param);
+			out = httpRequest(m_session_url, param);
+			std::cout << out;
+			if (out != "OK")
+			{
+				return lastfm_responses::FAILED;
+			}
 
 			/* reset some values */
 			scrobbled_items = 0;
@@ -193,7 +199,7 @@ int scrobbler::scrobble()
 		}
 	}
 
-	return 0;
+	return lastfm_responses::OK;
 }
 
 
