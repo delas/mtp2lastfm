@@ -19,9 +19,6 @@ const int AVG_SONG_LENGTH = 130; /* seconds */
 const string LASTFM_HANDSHAKE =
      "http://post.audioscrobbler.com/?hs=true&p=1.2.1&c=%s&v=%s&u=%s&t=%s&a=%s";
 
-/** The maximum number of tracks to scrobble in one time */
-const int LASTFM_MAX_TRACK_PER_SCROBBLE = 50;
-
 
 /** All the possible Last.fm response values */
 class lastfm_responses

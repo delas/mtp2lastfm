@@ -24,6 +24,8 @@ int scrobbler::lastfm_handshake()
 	/* start the handshake process */
 	vector<string> param = explode("\n", httpRequest(url));
 
+std::cout << param[0] << "\n";
+
 	if (param[0] == "OK")
 	{
 		m_session_id = param[1];
@@ -57,6 +59,8 @@ size_t writeHTML (char* buffer, size_t size, size_t nmemb, void* userp)
 string scrobbler::httpRequest(const string& url, const string& post)
 {
 	CURL* curl_handle;
+// 	std::cout << url << "\n";
+// 	std::cout << post << "\n";
 
 	curl_handle = curl_easy_init();
 	if(curl_handle)
@@ -73,6 +77,7 @@ string scrobbler::httpRequest(const string& url, const string& post)
 		/* always cleanup */
 		curl_easy_cleanup(curl_handle);
 	}
+// 	std::cout << html_buffer << "\n\n";
 	return html_buffer;
 }
 
@@ -148,57 +153,37 @@ void scrobbler::fetch(const device& device)
 int scrobbler::scrobble()
 {
 	lastfm_handshake();
+	srand((unsigned)time(0)); /* randomizer */
 
-	string param = "s=" + m_session_id + "&";
-	int using_timestamp = timestamp() - m_to_scrobble.size()*AVG_SONG_LENGTH;
+	string param, out;
+	int using_timestamp = timestamp() - m_to_scrobble.size()/* *AVG_SONG_LENGTH*/;
 	int scrobbled_items = 0;
+	int curr_track_position = -1;
 
 	while (!m_to_scrobble.empty())
 	{
-		if (scrobbled_items == LASTFM_MAX_TRACK_PER_SCROBBLE - 1)
-		{
-			/* reached the max number of scrobbleable track */
-			string out;
-			std::cout << "Scrobbling...\n";
-			std::cout.flush();
-			out = httpRequest(m_session_url, param);
-			std::cout << out;
-			if (out != "OK")
-			{
-				return lastfm_responses::FAILED;
-			}
+		/* take every track in random order */
+		curr_track_position = rand() % m_to_scrobble.size();
+		track t = m_to_scrobble[curr_track_position];
 
-			/* reset some values */
-			scrobbled_items = 0;
-			param = "s=" + m_session_id + "&";
-		}
-		else
+		param = "s=" + m_session_id + "&" +
+			getSubmissionPost(0, using_timestamp, t);
+		out = httpRequest(m_session_url, param);
+
+		if (out == "BADSESSION\n")
 		{
-			/* we can add some tracks to the scrobbling session */
-			track t = m_to_scrobble.back();
-			m_to_scrobble.pop_back();
-			param += getSubmissionPost(i,
-		                               using_timestamp + i*AVG_SONG_LENGTH,
-		                               t);
+			lastfm_handshake();
+		} else if (out == "OK\n")
+		{
+			using_timestamp += 1;
 			scrobbled_items++;
-
-			/* now, add this track to the scrobbled ones */
-			vector<track>::iterator element;
-			element = find(m_scrobbled.begin(), m_scrobbled.end(), t);
-			if (element == m_scrobbled.end())
-			{
-				/* add the new track with play counter set to 1 */
-				t.setPlayCount(1);
-				m_scrobbled.push_back(t);
-			}
-			else
-			{
-				/* increase the play counter by 1 */
-				element->setPlayCount(element->getPlayCount() + 1);
-			}
+			m_to_scrobble.erase(m_to_scrobble.begin() + curr_track_position);
+// 			std::cout << ".";
+// 			std::cout.flush();
+		} else {
+			return lastfm_responses::FAILED;
 		}
 	}
-
 	return lastfm_responses::OK;
 }
 
