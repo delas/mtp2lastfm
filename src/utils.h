@@ -37,6 +37,11 @@ string removeSpace(const string& s);
  */
 string toString(int n);
 
+/**
+ * This function return the current Unix timestamp
+ *
+ * @return the number of seconds from the Unix-epoch
+ */
 int timestamp();
 
 #endif // UTILS_H
