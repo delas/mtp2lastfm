@@ -19,13 +19,22 @@ const int AVG_SONG_LENGTH = 130; /* seconds */
 const string LASTFM_HANDSHAKE =
      "http://post.audioscrobbler.com/?hs=true&p=1.2.1&c=%s&v=%s&u=%s&t=%s&a=%s";
 
+/** The maximum number of tracks to scrobble in one time */
+const int LASTFM_MAX_TRACK_PER_SCROBBLE = 50;
 
+
+/** All the possible Last.fm response values */
 class lastfm_responses
 {
 	public:
+	/** OK response */
 	static const int OK      = 1;
+	/** This client version has been banned from the server */
 	static const int BANNED  = 2;
+	/** Authentication details provided were incorrect */
 	static const int BADAUTH = 3;
+	/** Timestamp provided was not close enough to the current time */
 	static const int BADTIME = 4;
+	/** General error */
 	static const int FAILED  = 5;
 };

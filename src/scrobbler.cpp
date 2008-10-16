@@ -77,18 +77,20 @@ string scrobbler::httpRequest(const string& url, const string& post)
 }
 
 
-string scrobbler::getSubmissionPost(const string& artist, const string& title, int play_timestamp, int duration, int current_sumbit) const
+string scrobbler::getSubmissionPost(int current_sumbit,
+                                    int play_timestamp,
+                                    const track& track) const
 {
 	string temp;
 	string cur = toString(current_sumbit);
-	temp = "a[" + cur + "]=" + artist + "&" +
-	       "t[" + cur + "]=" + title + "&" +
+	temp = "a[" + cur + "]=" + track.getArtist() + "&" +
+	       "t[" + cur + "]=" + track.getTitle() + "&" +
 	       "i[" + cur + "]=" + toString(play_timestamp) + "&" +
-	       "o[" + cur + "]=P" + "&" +
+	       "o[" + cur + "]=P&" +
 	       "r[" + cur + "]=" + "&" +
-	       "l[" + cur + "]=" + toString(duration) + "&" +
-	       "b[" + cur + "]=" + "&" +
-	       "n[" + cur + "]=" + "&" +
+	       "l[" + cur + "]=" + toString(track.getLength()) + "&" +
+	       "b[" + cur + "]=" + track.getAlbumTitle() + "&" +
+	       "n[" + cur + "]=" + toString(track.getPositionOnAlbum()) + "&" +
 	       "m[" + cur + "]=" + "&";
 	return temp;
 }
@@ -121,9 +123,11 @@ void scrobbler::fetch(const device& device)
 			if (element->getPlayCount() < playcount)
 			{
 				/* we need to scrobble this track some times */
-				track t = *element;
-				t.setPlayCount(playcount - element->getPlayCount());
-				m_to_scrobble.push_back(t);
+				track& t = *element;
+				for (int j = 0; j < playcount - t.getPlayCount(); j++)
+				{
+					m_to_scrobble.push_back(t);
+				}
 			}
 		}
 		else
@@ -131,7 +135,10 @@ void scrobbler::fetch(const device& device)
 			/* this track has never been scrobbled (and listened?) */
 			if (vt[i].getPlayCount() > 0)
 			{
-				m_to_scrobble.push_back(vt[i]);
+				for (int j = 0; j < vt[i].getPlayCount(); j++)
+				{
+					m_to_scrobble.push_back(vt[i]);
+				}
 			}
 		}
 	}
@@ -144,20 +151,48 @@ int scrobbler::scrobble()
 
 	string param = "s=" + m_session_id + "&";
 	int using_timestamp = timestamp() - m_to_scrobble.size()*AVG_SONG_LENGTH;
+	int scrobbled_items = 0;
 
-	for(unsigned int i = 0; i < m_to_scrobble.size(); i++)
+	while (!m_to_scrobble.empty())
 	{
-		track& t = m_to_scrobble[i];
-		param += getSubmissionPost(t.getArtist(),
-		                           t.getTitle(),
-		                           using_timestamp + i*AVG_SONG_LENGTH,
-		                           t.getLength(),
-		                           i);
+		if (scrobbled_items == LASTFM_MAX_TRACK_PER_SCROBBLE - 1)
+		{
+			/* reached the max number of scrobbleable track */
+			std::cout << "Scrobbling...\n";
+			std::cout.flush();
+			std::cout << httpRequest(m_session_url, param);
+
+			/* reset some values */
+			scrobbled_items = 0;
+			param = "s=" + m_session_id + "&";
+		}
+		else
+		{
+			/* we can add some tracks to the scrobbling session */
+			track t = m_to_scrobble.back();
+			m_to_scrobble.pop_back();
+			param += getSubmissionPost(i,
+		                               using_timestamp + i*AVG_SONG_LENGTH,
+		                               t);
+			scrobbled_items++;
+
+			/* now, add this track to the scrobbled ones */
+			vector<track>::iterator element;
+			element = find(m_scrobbled.begin(), m_scrobbled.end(), t);
+			if (element == m_scrobbled.end())
+			{
+				/* add the new track with play counter set to 1 */
+				t.setPlayCount(1);
+				m_scrobbled.push_back(t);
+			}
+			else
+			{
+				/* increase the play counter by 1 */
+				element->setPlayCount(element->getPlayCount() + 1);
+			}
+		}
 	}
 
-	std::cout << "Submission started...\n";
-	std::cout.flush();
-	std::cout << httpRequest(m_session_url, param);
 	return 0;
 }
 
