@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<!-- The root element -->
+	<xs:element name="mtp2lastfm">
+		<xs:complexType>
+			<xs:all>
+				<!-- The Last.fm account detaild -->
+				<xs:element name="lastfm">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="username" type="xs:string" />
+							<xs:element name="passwordMd5Hash" type="xs:string" />
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+
+				<!-- A list of already scrobbled tracks -->
+				<xs:element name="scrobbled">
+					<xs:complexType>
+						<xs:sequence minOccurs="0" maxOccurs="unbounded">
+							<xs:element ref="track" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+
+				<!-- A list of tracks to be scrobbled -->
+				<xs:element name="toScrobble">
+					<xs:complexType>
+						<xs:sequence minOccurs="0" maxOccurs="unbounded">
+							<xs:element ref="track" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- This is a single track element, it respects the class structure -->
+	<xs:element name="track">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="title" type="xs:string" />
+				<xs:element name="artist" type="xs:string" />
+				<xs:element name="album" type="xs:string" />
+				<xs:element name="albumPosition" type="xs:positiveInteger" />
+				<!-- Track length in seconds -->
+				<xs:element name="length" type="xs:positiveInteger" />
+				<xs:element name="playCount" type="xs:positiveInteger" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
