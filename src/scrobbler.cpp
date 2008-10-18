@@ -315,8 +315,6 @@ scrobbler scrobbler::load(const string& filename)
 	}
 	catch (const xml_schema::exception& e)
 	{
-		#include <iostream>
-		std::cout << e;
 	}
 	return s;
 }
