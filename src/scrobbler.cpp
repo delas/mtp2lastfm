@@ -1,5 +1,4 @@
 #include "scrobbler.h"
-#include<iostream>
 
 int scrobbler::lastfm_handshake()
 {
@@ -23,8 +22,6 @@ int scrobbler::lastfm_handshake()
 
 	/* start the handshake process */
 	vector<string> param = explode("\n", httpRequest(url));
-
-std::cout << param[0] << "\n";
 
 	if (param[0] == "OK")
 	{
@@ -59,8 +56,6 @@ size_t writeHTML (char* buffer, size_t size, size_t nmemb, void* userp)
 string scrobbler::httpRequest(const string& url, const string& post)
 {
 	CURL* curl_handle;
-// 	std::cout << url << "\n";
-// 	std::cout << post << "\n";
 
 	curl_handle = curl_easy_init();
 	if(curl_handle)
@@ -77,7 +72,6 @@ string scrobbler::httpRequest(const string& url, const string& post)
 		/* always cleanup */
 		curl_easy_cleanup(curl_handle);
 	}
-// 	std::cout << html_buffer << "\n\n";
 	return html_buffer;
 }
 
@@ -110,6 +104,12 @@ void scrobbler::setUsername(const string& username)
 void scrobbler::setPassword(const string& password)
 {
 	m_password = MD5String(const_cast<char*>(password.c_str()));
+}
+
+
+void scrobbler::setPasswordHash(const string& passwordHash)
+{
+	m_password = passwordHash;
 }
 
 
@@ -156,7 +156,7 @@ int scrobbler::scrobble()
 	srand((unsigned)time(0)); /* randomizer */
 
 	string param, out;
-	int using_timestamp = timestamp() - m_to_scrobble.size()/* *AVG_SONG_LENGTH*/;
+	int using_timestamp = timestamp() - m_to_scrobble.size();
 	int scrobbled_items = 0;
 	int curr_track_position = -1;
 
@@ -178,8 +178,7 @@ int scrobbler::scrobble()
 			using_timestamp += 1;
 			scrobbled_items++;
 			m_to_scrobble.erase(m_to_scrobble.begin() + curr_track_position);
-// 			std::cout << ".";
-// 			std::cout.flush();
+			increaseScrobbledCount(t);
 		} else {
 			return lastfm_responses::FAILED;
 		}
@@ -188,16 +187,82 @@ int scrobbler::scrobble()
 }
 
 
-bool scrobbler::save(const string& filename, const scrobbler& obj)
+void scrobbler::import()
 {
-	ofstream output_file (filename.c_str(),
-	                      ofstream::out|ofstream::binary|ofstream::trunc);
-	int obj_dimension = sizeof(scrobbler) +
-	                    sizeof(track) * (obj.m_scrobbled.size() +
-	                                     obj.m_to_scrobble.size());
+	for (unsigned int i = 0; i < m_to_scrobble.size(); i++)
+	{
+		increaseScrobbledCount(m_to_scrobble[i]);
+	}
+	m_to_scrobble.clear();
+}
+
+
+void scrobbler::increaseScrobbledCount(track& t)
+{
+	vector<track>::iterator element;
+	element = find(m_scrobbled.begin(), m_scrobbled.end(), t);
+	if (element != m_scrobbled.end())
+	{
+		/* this track has already been scrobbled */
+		element->setPlayCount(element->getPlayCount() + 1);
+	}
+	else
+	{
+		/* this track has never been scrobbled */
+		t.setPlayCount(1);
+		m_scrobbled.push_back(t);
+	}
+}
+
+
+bool scrobbler::save(const string& filename)
+{
+	/* the lastfm authentication data */
+	xml::lastfm x_lastfm(m_username, m_password);
+
+	/* tracks already scrobbled */
+	xml::scrobbled x_scrobbled;
+	xml::scrobbled::track_sequence x_scrobbled_track;
+	for (unsigned int i = 0; i < m_scrobbled.size(); i++)
+	{
+		xml::track t(m_scrobbled[i].getTitle(),
+		             m_scrobbled[i].getArtist(),
+		             m_scrobbled[i].getAlbumTitle(),
+		             m_scrobbled[i].getPositionOnAlbum(),
+		             m_scrobbled[i].getLength(),
+		             m_scrobbled[i].getPlayCount());
+		x_scrobbled_track.push_back(t);
+	}
+	x_scrobbled.track(x_scrobbled_track);
+
+	/* tracks to be scrobbled */
+	xml::toScrobble x_toscrobble;
+	xml::toScrobble::track_sequence x_toscrobble_track;
+	for (unsigned int i = 0; i < m_to_scrobble.size(); i++)
+	{
+		xml::track t(m_to_scrobble[i].getTitle(),
+		             m_to_scrobble[i].getArtist(),
+		             m_to_scrobble[i].getAlbumTitle(),
+		             m_to_scrobble[i].getPositionOnAlbum(),
+		             m_to_scrobble[i].getLength(),
+		             m_to_scrobble[i].getPlayCount());
+		x_toscrobble_track.push_back(t);
+	}
+	x_toscrobble.track(x_toscrobble_track);
+
+	/* merge all the data to the root element */
+	xml::mtp2lastfm x_root(x_lastfm, x_scrobbled, x_toscrobble);
+
+
+	xml_schema::namespace_infomap map;
+	map[""].name = "";
+	map[""].schema = "src/xsd/mtp2lastfm.xsd";
+
+	/* write it out */
+	ofstream output_file (filename.c_str(), ofstream::out|ofstream::trunc);
 	if (output_file.is_open())
 	{
-		output_file.write((const char*)&obj, obj_dimension);
+		xml::mtp2lastfm_ (output_file, x_root, map);
 		output_file.close();
 		return true;
 	}
@@ -208,11 +273,36 @@ bool scrobbler::save(const string& filename, const scrobbler& obj)
 scrobbler scrobbler::load(const string& filename)
 {
 	scrobbler s;
-	ifstream input_file (filename.c_str(), ifstream::binary);
-	if (input_file.is_open())
+	try
 	{
-		input_file.read((char*)&s, scrobbler::getFileSize(filename));
-		input_file.close();
+		auto_ptr<xml::mtp2lastfm> x = xml::mtp2lastfm_(filename,
+		                                           xml_schema::flags::keep_dom);
+
+		/* load the lastfm data */
+		xml::lastfm& lfm = x->lastfm();
+		s.setUsername(lfm.username());
+		s.setPasswordHash(lfm.passwordMd5Hash());
+
+		/* load the scrobbled tracks */
+		xml::scrobbled& scrobb = x->scrobbled();
+		for (xml::scrobbled::track_const_iterator t (scrobb.track().begin());
+			t != scrobb.track().end(); t++)
+		{
+			track tr(*t);
+			s.m_scrobbled.push_back(tr);
+		}
+
+		/* load the to be scrobbled tracks */
+		xml::toScrobble& to_scrobb = x->toScrobble();
+		for (xml::toScrobble::track_const_iterator t(to_scrobb.track().begin());
+			t != to_scrobb.track().end(); t++)
+		{
+			track tr(*t);
+			s.m_to_scrobble.push_back(tr);
+		}
+	}
+	catch (const xml_schema::exception& e)
+	{
 	}
 	return s;
 }

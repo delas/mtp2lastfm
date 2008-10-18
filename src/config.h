@@ -19,6 +19,9 @@ const int AVG_SONG_LENGTH = 130; /* seconds */
 const string LASTFM_HANDSHAKE =
      "http://post.audioscrobbler.com/?hs=true&p=1.2.1&c=%s&v=%s&u=%s&t=%s&a=%s";
 
+/** The path for the mtp2lastfm.xsd */
+const string MTP2LASTFM_XSD_URI =
+                         "http://mtp2lastfm.sourceforge.net/xsd/mtp2lastfm.xsd";
 
 /** All the possible Last.fm response values */
 class lastfm_responses

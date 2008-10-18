@@ -3,10 +3,10 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 #include <fstream>
 #include <algorithm>
 #include <curl/curl.h>
-
 #include "config.h"
 #include "track.h"
 #include "device.h"
@@ -18,6 +18,7 @@ using std::string;
 using std::vector;
 using std::ofstream;
 using std::ifstream;
+using std::auto_ptr;
 
 /**
  * This is the Last.fm track scrobbler
@@ -29,7 +30,6 @@ class scrobbler
 	string m_password;           /**< MD5 of the Last.fm account password */
 	string m_session_id;         /**< The submissions session id */
 	string m_session_url;        /**< The submissions URL for this session */
-	public:
 	vector<track> m_scrobbled;   /**< A list of already-scrobbled track */
 	vector<track> m_to_scrobble; /**< A list of track to scrobble */
 
@@ -68,6 +68,14 @@ class scrobbler
 	                         int play_timestamp,
 	                         const track& track) const;
 
+	/**
+	 * This method increases the times a track has been scrobbled (by summing 1
+	 * or adding the new track)
+	 *
+	 * @param t the track that has been scrobbled another time
+	 */
+	void increaseScrobbledCount(track& t);
+
 	public:
 	/**
 	 * This method sets the Last.fm account username
@@ -83,9 +91,16 @@ class scrobbler
 	 * forever lost. This as a security issue (there is no real need to store
 	 * the true real password).
 	 *
-	 * @param username the Last.fm password
+	 * @param password the Last.fm password
 	 */
 	void setPassword(const string& password);
+
+	/**
+	 * This method sets the Last.fm account password MD5 hash.
+	 *
+	 * @param passwordHash the Last.fm password hash
+	 */
+	void setPasswordHash(const string& passwordHash);
 
 	/**
 	 * This method fetches the data from the device and populate the
@@ -105,6 +120,12 @@ class scrobbler
 	int scrobble();
 
 	/**
+	 * This method yust mark all the track to be scrobbled, without doing it
+	 * really
+	 */
+	void import();
+
+	/**
 	 * This method saves a general scrobbler class into a binary file
 	 *
 	 * @param filename the file where to save the object
@@ -112,7 +133,7 @@ class scrobbler
 	 * @return true if the saving processing has correctly finished, false
 	 *         otherwise
 	 */
-	static bool save(const string& filename, const scrobbler& obj);
+	bool save(const string& filename);
 
 	/**
 	 * This method saves a general scrobbler class into a binary file
