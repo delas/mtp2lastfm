@@ -32,6 +32,7 @@ class scrobbler
 	string m_session_url;        /**< The submissions URL for this session */
 	vector<track> m_scrobbled;   /**< A list of already-scrobbled track */
 	vector<track> m_to_scrobble; /**< A list of track to scrobble */
+	string m_last_error;         /**< The last scrobbling error */
 
 	private:
 	/**
@@ -101,6 +102,13 @@ class scrobbler
 	 * @param passwordHash the Last.fm password hash
 	 */
 	void setPasswordHash(const string& passwordHash);
+
+	/**
+	 * This methods return the last error, if happened
+	 *
+	 * @return a verbose error output
+	 */
+	string getError() const;
 
 	/**
 	 * This method fetches the data from the device and populate the
