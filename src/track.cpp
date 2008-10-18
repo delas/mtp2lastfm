@@ -20,6 +20,17 @@ track::track(LIBMTP_track_t* track)
 }
 
 
+track::track(xml::track track)
+{
+	m_track_title = track.title();
+	m_track_artist = track.artist();
+	m_album_title = track.album();
+	m_pos_on_album = track.albumPosition();
+	m_sec_length = track.length();
+	m_play_count = track.playCount();
+}
+
+
 void track::setPlayCount(int total_play_count)
 {
 	if (total_play_count > 0)

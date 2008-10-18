@@ -3,6 +3,7 @@
 
 #include <string>
 #include <libmtp.h>
+#include "xsd/mtp2lastfm.hxx"
 
 using std::string;
 
@@ -27,6 +28,13 @@ class track
 	 * @param track the libmtp track element
 	 */
 	track(LIBMTP_track_t* track);
+
+	/**
+	 * This is the constructor from a XML track
+	 *
+	 * @param track the XML track element
+	 */
+	track(xml::track track);
 
 	/**
 	 * This method return the track title
