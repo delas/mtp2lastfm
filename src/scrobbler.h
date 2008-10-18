@@ -12,6 +12,7 @@
 #include "device.h"
 #include "md5.h"
 #include "utils.h"
+#include "xsd/mtp2lastfm.hxx"
 
 using std::string;
 using std::vector;
