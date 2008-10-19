@@ -30,23 +30,126 @@
 #include "device.h"
 #include "scrobbler.h"
 
+#define print(x) cout << x << endl;
+#define verbose(x) if (verbose_mode) print(x)
+
 using namespace std;
 
-int main()
+void help(const char* cmd)
 {
-	string user, pass;
+	print("Usage: " << cmd << " [options]")
+	print("Options:")
+	print("  -i, --import        Import all the player track, and mark as already scrobbled")
+	print("  -l, --list-devices  List all connected devices")
+	print("  -v                  Verbose mode")
+	print("  --help              Display this information")
+	print("")
+}
 
-	cout << "Username: "; cin >> user;
-	cout << "Password: "; cin >> pass;
+int main(int argc, char* argv[])
+{
+	bool only_import = false;
+	bool only_list_device = false;
+	bool verbose_mode = false;
+	string configfile = (string(getenv("HOME")) + "/.mtp2lastfm");
+	device d;
 
-	scrobbler s;
-	s.setUsername(user);
-	s.setPassword(pass);
+	/* header */
+	print("mtp2lastfm v." << CLIENT_VERSION)
+	print("================")
+	print("")
 
+	/* parameters */
+	for (int i = 1; i < argc; i++)
+	{
+		if (strcmp(argv[i], "-i")==0 || strcmp(argv[i], "--import")==0)
+		{
+			only_import = true;
+		}
+		if (strcmp(argv[i], "-l")==0 || strcmp(argv[i], "--list-devices")==0)
+		{
+			only_list_device = true;
+		}
+		if (strcmp(argv[i], "-v")==0)
+		{
+			verbose_mode = true;
+		}
+		else if (strcmp(argv[i], "--help")==0)
+		{
+			help(argv[0]);
+			return 0;
+		}
+	}
+
+	/* list all connected device */
+	if (only_list_device)
+	{
+		verbose("Getting all connected devices");
+		vector<device> vd = device::getAllConnectedDevices();
+		print("Device list")
+		print("-----------");
+		if (vd.size() == 0)
+		{
+			print("No devices present.")
+		}
+		else
+		{
+			for (unsigned int i = 0; i < vd.size(); i++)
+			{
+				print(i << ". " << vd[i].getName() << " - " << vd[i].getManufacturer())
+			}
+		}
+		print("");
+		return 0;
+	}
+
+	/* load the default scrobbler */
+	verbose("Default scrobbler configuration load");
+	scrobbler s = scrobbler::load(configfile);
+
+	/* set up device to be used */
+	verbose("Getting all connected devices");
 	vector<device> vd = device::getAllConnectedDevices();
-	device d = vd[0];
+	if (vd.size() == 1)
+	{
+		d = vd[0];
+	}
 
-	s.fetch(d);
-	cout << "Scrobbling " << d.getName() << ":" << endl;
-	s.scrobble();
+	if (s.getUsername() == "")
+	{
+		verbose("Last.fm accout not setted")
+		
+	}
+
+// 	string user, pass;
+
+// 	cout << "Username: "; cin >> user;
+// 	cout << "Password: "; cin >> pass;
+// 	scrobbler s = scrobbler::load("asd.xml");
+
+// 	s.setUsername("delas__test");
+// 	s.setPassword("delas__test");
+
+// 	vector<device> vd = device::getAllConnectedDevices();
+// 	for (unsigned int i = 0; i < vd.size(); i++)
+// 	{
+// 		cout << i << ". " << vd[i].getName() << " (" << vd[i].getManufacturer() << ")\n";
+// 	}
+// 	device d = vd[0];
+
+// 	s.fetch(d);
+// 	s.import();
+// 	s.save("saved.xml");
+// 	cout << "Scrobbling " << d.getName() << ":" << endl;
+// 	int response = s.scrobble();
+// 	if (response == lastfm_responses::OK)
+// 	{
+// 		cout << "ok\n";
+// 	}
+// 	else
+// 	{
+// 		cout << "errors...\n";
+// 		cout << s.getError();
+// 	}
+// 	s.save("saved.xml");
 }
