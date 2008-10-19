@@ -101,6 +101,12 @@ void scrobbler::setUsername(const string& username)
 }
 
 
+string scrobbler::getUsername() const
+{
+	return m_username;
+}
+
+
 void scrobbler::setPassword(const string& password)
 {
 	m_password = MD5String(const_cast<char*>(password.c_str()));

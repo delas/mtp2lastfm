@@ -79,6 +79,13 @@ class scrobbler
 
 	public:
 	/**
+	 * This method gets the Last.fm account username
+	 *
+	 * @return the Last.fm username
+	 */
+	string getUsername() const;
+
+	/**
 	 * This method sets the Last.fm account username
 	 *
 	 * @param username the Last.fm username
