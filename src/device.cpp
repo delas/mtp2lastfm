@@ -3,6 +3,10 @@
 bool device::m_libmtp_initialized = false;
 
 
+device::device()
+{}
+
+
 device::device(LIBMTP_mtpdevice_t* device)
 {
 	device::checkLibmtpInitialization();

@@ -30,6 +30,12 @@ class device
 
 	public:
 	/**
+	 * This is the default main constructor
+	 *
+	 */
+	device();
+
+	/**
 	 * This is the main constructor, from a libmtp device structure
 	 *
 	 * @param device the libmtp device structure
