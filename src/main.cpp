@@ -33,7 +33,8 @@
 #include "scrobbler.h"
 
 #define print(x) cout << x << endl;
-#define verbose(x) if (flag_verbose_mode) print(x)
+#define verbose(x) if (flag_verbose_mode > 0) print(x)
+#define vverbose(x) if (flag_verbose_mode > 1) print(x)
 
 using namespace std;
 
@@ -48,7 +49,7 @@ void help(const char* cmd)
 	print("Options:")
 	print("  -i, --import        Import all the player track, and mark as already scrobbled")
 	print("  -l, --list-devices  List all connected devices")
-	print("  -v, --verbose       Verbose mode")
+	print("  -v, --verbose       Verbose mode (-vv for more verbose)")
 	print("  -V, --version       Version information")
 	print("  -h, --help          Display this information")
 	print("")
@@ -70,9 +71,9 @@ void version()
 
 int main(int argc, char* argv[])
 {
-	bool flag_only_import = false;
-	bool flag_only_list_device = false;
-	bool flag_verbose_mode = false;
+	bool flag_only_import = false; /* sets if just import the songs */
+	bool flag_only_list_device = false; /* sets if just only  list devices */
+	int flag_verbose_mode = 0; /* how much verbose (actually only 2 levels)? */
 
 	/* command line parsing */
 	int c;
@@ -100,7 +101,7 @@ int main(int argc, char* argv[])
 				flag_only_list_device = true;
 				break;
 			case 'v':
-				flag_verbose_mode = true;
+				flag_verbose_mode++;
 				break;
 			case 'V':
 				version();
@@ -110,18 +111,21 @@ int main(int argc, char* argv[])
 		}
 	}
 
+
 	/* base objects */
-	verbose("Internal objects declaration")
+	vverbose("Internal objects declaration")
 	string configfile = (string(getenv("HOME")) + "/.mtp2lastfm");
 	device d;
+	vverbose("Internal objects successfully decleared and initialized")
 
 	/* list all connected device */
 	if (flag_only_list_device)
 	{
 		verbose("Getting all connected devices");
 		vector<device> vd = device::getAllConnectedDevices();
-		print("Device list")
-		print("-----------");
+		vverbose("All device successfully gotten")
+
+		print("Device list:")
 		if (vd.size() == 0)
 		{
 			print("No devices present.")
@@ -130,6 +134,7 @@ int main(int argc, char* argv[])
 		{
 			for (unsigned int i = 0; i < vd.size(); i++)
 			{
+				vverbose("   Getting device information")
 				print(i << ". " << vd[i].getName() << " - " << vd[i].getManufacturer())
 			}
 		}
@@ -138,12 +143,14 @@ int main(int argc, char* argv[])
 	}
 
 	/* load the default scrobbler */
-	verbose("Default scrobbler configuration load");
+	verbose("Default scrobbler configuration loading");
 	scrobbler s = scrobbler::load(configfile);
+	vverbose("Default scrobbler successfully loaded")
 
 	/* set up device to be used */
 	verbose("Getting all connected devices");
 	vector<device> vd = device::getAllConnectedDevices();
+	vverbose("All device successfully gotten")
 	if (vd.size() == 1)
 	{
 		d = vd[0];
