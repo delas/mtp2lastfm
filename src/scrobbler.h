@@ -156,15 +156,30 @@ class scrobbler
 	/**
 	 * This method scrobbles all the track fetched
 	 *
+	 * @param callback a callback function
 	 * @return a scrobble response value
 	 */
-	int scrobble();
+	int scrobble(void (*callback)(int current, int total) = 0);
 
 	/**
 	 * This method yust mark all the track to be scrobbled, without doing it
 	 * really
 	 */
 	void import();
+
+	/**
+	 * This method return a vector of scrobbled tracks
+	 *
+	 * @return a constant reference to a vector of scrobbled tracks
+	 */
+	const vector<track>& getScrobbledTrack() const;
+
+	/**
+	 * This method return a vector of tracks to be scrobbled
+	 *
+	 * @return a constant reference to a vector of tracks to be scrobbled
+	 */
+	const vector<track>& getToScrobbleTrack() const;
 
 	/**
 	 * This method saves a general scrobbler class into a binary file

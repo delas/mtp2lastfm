@@ -188,13 +188,14 @@ void scrobbler::fetch(const device& device)
 }
 
 
-int scrobbler::scrobble()
+int scrobbler::scrobble(void (*callback)(int current, int total))
 {
 	lastfm_handshake();
 	srand((unsigned)time(0)); /* randomizer */
 
 	string param, out;
-	int using_timestamp = timestamp() - m_to_scrobble.size();
+	int total_to_scrobble = m_to_scrobble.size();
+	int using_timestamp = timestamp() - total_to_scrobble;
 	int scrobbled_items = 0;
 	int curr_track_position = -1;
 
@@ -217,6 +218,10 @@ int scrobbler::scrobble()
 			scrobbled_items++;
 			m_to_scrobble.erase(m_to_scrobble.begin() + curr_track_position);
 			increaseScrobbledCount(t);
+			if (callback != 0)
+			{
+				callback(scrobbled_items, total_to_scrobble);
+			}
 		} else {
 			m_last_error = out;
 			return lastfm_responses::FAILED;
@@ -233,6 +238,18 @@ void scrobbler::import()
 		increaseScrobbledCount(m_to_scrobble[i]);
 	}
 	m_to_scrobble.clear();
+}
+
+
+const vector<track>& scrobbler::getScrobbledTrack() const
+{
+	return m_scrobbled;
+}
+
+
+const vector<track>& scrobbler::getToScrobbleTrack() const
+{
+	return m_to_scrobble;
 }
 
 
