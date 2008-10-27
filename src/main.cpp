@@ -42,13 +42,14 @@ using namespace std;
 void help(const char* cmd)
 {
 	/* header */
-	print("mtp2lastfm " << CLIENT_VERSION)
+	print("mtp2lastfm " << VERSION)
 	print("")
 	/* help content */
 	print("Basic usages: " << cmd << " [options]")
 	print("Options:")
 	print("  -i, --import        Import all the player track, and mark as already scrobbled")
 	print("  -l, --list-devices  List all connected devices")
+	print("  -s, --stats         Print some statistics")
 	print("  -v, --verbose       Verbose mode (-vv for more verbose)")
 	print("  -V, --version       Version information")
 	print("  -h, --help          Display this information")
@@ -58,7 +59,7 @@ void help(const char* cmd)
 void version()
 {
 	/* header */
-	print("mtp2lastfm " << CLIENT_VERSION)
+	print("mtp2lastfm " << VERSION)
 	print("")
 	/* version content */
 	print("Copyright (C) 2008 - Andrea Burattin")
@@ -68,11 +69,25 @@ void version()
 	print("the GNU General Public License.")
 }
 
+void callback(int current, int total)
+{
+	if (current % 10 == 0)
+	{
+		cout << endl << current << " of " << total << endl;
+	}
+	else
+	{
+		cout << ".";
+	}
+	cout.flush();
+}
+
 
 int main(int argc, char* argv[])
 {
 	bool flag_only_import = false; /* sets if just import the songs */
-	bool flag_only_list_device = false; /* sets if just only  list devices */
+	bool flag_only_list_device = false; /* sets if just list devices */
+	bool flag_only_stats = false; /* sets if just show some stats */
 	int flag_verbose_mode = 0; /* how much verbose (actually only 2 levels)? */
 
 	/* command line parsing */
@@ -82,11 +97,12 @@ int main(int argc, char* argv[])
 		{"help",         no_argument, 0, 'h'},
 		{"import",       no_argument, 0, 'i'},
 		{"list-devices", no_argument, 0, 'l'},
+		{"stats",        no_argument, 0, 's'},
 		{"verbose",      no_argument, 0, 'v'},
 		{"version",      no_argument, 0, 'V'},
 		{ 0, 0, 0, 0 }
 	};
-	while ((c = getopt_long(argc, argv, "hilvV",
+	while ((c = getopt_long(argc, argv, "hilsvV",
 	                        long_options, &option_index)) != -1)
 	{
 		switch (c)
@@ -99,6 +115,9 @@ int main(int argc, char* argv[])
 				break;
 			case 'l':
 				flag_only_list_device = true;
+				break;
+			case 's':
+				flag_only_stats = true;
 				break;
 			case 'v':
 				flag_verbose_mode++;
@@ -125,20 +144,19 @@ int main(int argc, char* argv[])
 		vector<device> vd = device::getAllConnectedDevices();
 		vverbose("All device successfully gotten")
 
-		print("Device list:")
 		if (vd.size() == 0)
 		{
-			print("No devices present.")
+			print("No devices connected!")
 		}
 		else
 		{
+			print("Device list:")
 			for (unsigned int i = 0; i < vd.size(); i++)
 			{
 				vverbose("   Getting device information")
 				print(i << ". " << vd[i].getName() << " - " << vd[i].getManufacturer())
 			}
 		}
-		print("");
 		return 0;
 	}
 
@@ -147,50 +165,133 @@ int main(int argc, char* argv[])
 	scrobbler s = scrobbler::load(configfile);
 	vverbose("Default scrobbler successfully loaded")
 
+	/* print some stats */
+	if (flag_only_stats)
+	{
+		vverbose("Getting scrobbled track list")
+		const vector<track>& scrobbled = s.getScrobbledTrack();
+		if (scrobbled.size() > 0)
+		{
+			int total_plays = 0;
+			int total_secs = 0;
+			for (unsigned int i = 0; i < scrobbled.size(); i++)
+			{
+				total_plays += scrobbled[i].getPlayCount();
+				total_secs += scrobbled[i].getLength()*scrobbled[i].getPlayCount();
+			}
+			vverbose("Scrobbled track list gotten")
+			print("Statistics:")
+			print(" - " << scrobbled.size() << " listened songs")
+			print(" - " << total_plays << " total listenings")
+			print(" - about " << (int)(total_plays/scrobbled.size()) << " listenings per song")
+			print(" - " << (int)(total_secs/60) << " minute")
+		}
+		else
+		{
+			print("No listenings yet")
+		}
+		return 0;
+	}
+
 	/* set up device to be used */
 	verbose("Getting all connected devices");
 	vector<device> vd = device::getAllConnectedDevices();
 	vverbose("All device successfully gotten")
-	if (vd.size() == 1)
+	if (vd.size() == 0)
 	{
+		print("No devices connected!")
+		print("Connect an MTP device and try again...")
+		return 1;
+	}
+	else if (vd.size() == 1)
+	{
+		verbose("Just one device detected")
 		d = vd[0];
 	}
-
-	if (s.getUsername() == "")
+	else
 	{
-		verbose("Last.fm accout not setted")
-		
+		int selected_device = -1;
+		do
+		{
+			print("Device list:")
+			for (unsigned int i = 0; i < vd.size(); i++)
+			{
+				vverbose("   Getting device information")
+				print(i << ". " << vd[i].getName() << " - " << vd[i].getManufacturer())
+			}
+			cout << "Insert the device number [0-" << (vd.size()-1) << "]: ";
+			cin >> selected_device;
+		} while (selected_device < 0 || (unsigned int)(selected_device) >= vd.size());
+		/* we can assign the correct device number... */
+		d = vd[selected_device];
 	}
 
-// 	string user, pass;
+	/* the user want to import the song data */
+	if (flag_only_import)
+	{
+		print("Preparing for importing data...")
+		verbose("Fetching data from device...")
+		s.fetch(d);
+		vverbose("Data fetched")
+		verbose("Importing data...")
+		s.import();
+		vverbose("Data correctly imported")
+		verbose("Saving data...")
+		s.save(configfile);
+		vverbose("Data saved")
+		print("Data correctly imported!")
+		return 0;
+	}
 
-// 	cout << "Username: "; cin >> user;
-// 	cout << "Password: "; cin >> pass;
-// 	scrobbler s = scrobbler::load("asd.xml");
+	/* if here, the user want to scrobble */
+	/* check the lastfm account */
+	if (s.getUsername() == "")
+	{
+		print("Last.fm accout not setted yet")
+		string username, password;
+		cout << "Please insert your Last.fm username: ";
+		cin >> username;
+		cout << "Now your password: ";
+		cin >> password;
+		verbose("Setting Last.fm username and password")
+		s.setUsername(username);
+		s.setPassword(password);
+		vverbose("Username and password setted")
+		verbose("Saving data...")
+		s.save(configfile);
+		vverbose("Data saved")
+	}
 
-// 	s.setUsername("delas__test");
-// 	s.setPassword("delas__test");
+	print("Preparing for importing data...")
+	verbose("Fetching data from device...")
+	s.fetch(d);
+	vverbose("Data fetched")
 
-// 	vector<device> vd = device::getAllConnectedDevices();
-// 	for (unsigned int i = 0; i < vd.size(); i++)
-// 	{
-// 		cout << i << ". " << vd[i].getName() << " (" << vd[i].getManufacturer() << ")\n";
-// 	}
-// 	device d = vd[0];
+	verbose("Verifying tracks to be scrobbled")
+	const vector<track>& to_scrobble = s.getToScrobbleTrack();
+	if (to_scrobble.size() == 0)
+	{
+		print("Nothing to do here (no tracks to be scrobbled)")
+		return 0;
+	}
+	else
+	{
+		print(to_scrobble.size() << " tracks to be scrobbled")
+	}
 
-// 	s.fetch(d);
-// 	s.import();
-// 	s.save("saved.xml");
-// 	cout << "Scrobbling " << d.getName() << ":" << endl;
-// 	int response = s.scrobble();
-// 	if (response == lastfm_responses::OK)
-// 	{
-// 		cout << "ok\n";
-// 	}
-// 	else
-// 	{
-// 		cout << "errors...\n";
-// 		cout << s.getError();
-// 	}
-// 	s.save("saved.xml");
+	print("Scrobbling started...")
+	if (s.scrobble(callback) == lastfm_responses::OK)
+	{
+		print("Scrobbling complete!")
+		verbose("Saving data...")
+		s.save(configfile);
+		vverbose("Data saved")
+		return 0;
+	}
+	else
+	{
+		print("Damn! Scrobbling error (listened below)...")
+		print(s.getError())
+		return 1;
+	}
 }
