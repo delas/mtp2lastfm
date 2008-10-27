@@ -38,7 +38,7 @@
 #include "device.h"
 #include "md5.h"
 #include "utils.h"
-#include "xsd/mtp2lastfm.hxx"
+#include "xsd/mtp2lastfm.h"
 
 using std::string;
 using std::vector;

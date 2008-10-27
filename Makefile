@@ -35,13 +35,13 @@ bin-dir:
 
 xml-source:
 	$(ECHO) "[XSD] XML binding generation"
-	$(XSD) cxx-tree --generate-serialization --root-element mtp2lastfm \
-		--output-dir $(XML_SRC_DIR) --namespace-map =xml \
-		$(XML_SRC_DIR)/mtp2lastfm.xsd
+# 	$(XSD) cxx-tree --generate-serialization --root-element mtp2lastfm \
+# 		--output-dir $(XML_SRC_DIR) --namespace-map =xml \
+# 		$(XML_SRC_DIR)/mtp2lastfm.xsd --hxx-suffix h --cxx-suffix cpp
 
 xml-binary: bin-dir xml-source
 	$(ECHO) "[CC] obj/mtp2lastfm"
-	$(CC) $(CFLAGS) -c $(XML_SRC_DIR)/mtp2lastfm.cxx -o $(OBJ_DIR)/mtp2lastfm.o
+	$(CC) $(CFLAGS) -c $(XML_SRC_DIR)/mtp2lastfm.cpp -o $(OBJ_DIR)/mtp2lastfm.o
 
 documentation: clean-doc
 	$(ECHO) "Building new documentation..."

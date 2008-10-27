@@ -29,7 +29,7 @@
 
 #include <string>
 #include <libmtp.h>
-#include "xsd/mtp2lastfm.hxx"
+#include "xsd/mtp2lastfm.h"
 
 using std::string;
 
