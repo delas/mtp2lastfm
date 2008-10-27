@@ -29,10 +29,10 @@
 using std::string;
 
 /** The client identifier */
-const string CLIENT_ID = "tst";
+const string CLIENT_ID = "mtp";
 
 /** The current client version */
-const string CLIENT_VERSION = "1.0";
+const string VERSION = "0.1";
 
 /** The user agent used for the cURL calls */
 const string USER_AGENT =
