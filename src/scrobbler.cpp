@@ -40,7 +40,7 @@ int scrobbler::lastfm_handshake()
 	char* chr_url = new char[512];
 	sprintf(chr_url, LASTFM_HANDSHAKE.c_str(),
 	    CLIENT_ID.c_str(),
-	    VERSION.c_str(),
+	    CLIENT_VERSION.c_str(),
 	    m_username.c_str(),
 	    timestamp_.c_str(),
 	    token.c_str());

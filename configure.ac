@@ -22,16 +22,12 @@
 #                   MA  02111-1307, USA.
 #
 
-PACKAGE = mtp2lastfm
-VERSION = 0.1
-MAIL = andrea@REMOVESPAMdelas.it
-
 AC_INIT([mtp2lastfm], [0.1], [andrea@REMOVESPAMdelas.it])
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_CXX
 AC_PREFIX_DEFAULT([/usr])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([src/autoconfig.h])
 AC_CONFIG_FILES([
    Makefile
    src/Makefile

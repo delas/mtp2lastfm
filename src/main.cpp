@@ -42,7 +42,7 @@ using namespace std;
 void help(const char* cmd)
 {
 	/* header */
-	print("mtp2lastfm " << VERSION)
+	print("mtp2lastfm " << CLIENT_VERSION)
 	print("")
 	/* help content */
 	print("Basic usages: " << cmd << " [options]")
@@ -59,7 +59,7 @@ void help(const char* cmd)
 void version()
 {
 	/* header */
-	print("mtp2lastfm " << VERSION)
+	print("mtp2lastfm " << CLIENT_VERSION)
 	print("")
 	/* version content */
 	print("Copyright (C) 2008 - Andrea Burattin")

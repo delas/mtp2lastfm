@@ -25,6 +25,7 @@
  */
 
 #include <string>
+#include "autoconfig.h"
 
 using std::string;
 
@@ -32,7 +33,7 @@ using std::string;
 const string CLIENT_ID = "mtp";
 
 /** The current client version */
-const string VERSION = "0.1";
+const string CLIENT_VERSION = VERSION;
 
 /** The user agent used for the cURL calls */
 const string USER_AGENT =
