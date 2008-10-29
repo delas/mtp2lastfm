@@ -1,5 +1,5 @@
 #
-# configure.am
+# configure.ac
 #
 # Author: Andrea Burattin (http://www.delas.it)
 # Copyright (C) 2008  Andrea Burattin
@@ -29,17 +29,29 @@ AC_PROG_CXX
 AC_PREFIX_DEFAULT([/usr])
 AC_CONFIG_HEADERS([src/autoconfig.h])
 AC_CONFIG_FILES([
-   Makefile
-   src/Makefile
+	Makefile
+	src/Makefile
 ])
 
-AC_CHECK_LIB(mtp, [LIBMTP_Get_Tracklisting_With_Callback])
-LDFLAGS="$LDFLAGS -lmtp"
+AC_CHECK_HEADER(xsd/cxx/version.hxx, [], [
+	echo "Error! You need to install CodeSynthesis libs!"
+	echo "Check http://www.codesynthesis.com/products/xsd/download.xhtml"
+	exit -1
+	])
 
-AC_CHECK_LIB(curl, [curl_easy_perform])
-LDFLAGS="$LDFLAGS -lcurl"
+AC_CHECK_LIB(mtp, [LIBMTP_Get_Tracklisting_With_Callback], [], [
+	echo "Error! You need to have libmtp installed."
+	exit -1
+	])
 
-AC_CHECK_LIB(xerces-c, [toupper])
-LDFLAGS="$LDFLAGS -lxerces-c"
+AC_CHECK_LIB(curl, [curl_easy_perform], [], [
+	echo "Error! You need to have libcurl installed."
+	exit -1
+	])
+
+AC_CHECK_LIB(xerces-c, [toupper], [], [
+	echo "Error! You need to have xerces-c installed."
+	exit -1
+	])
 
 AC_OUTPUT
