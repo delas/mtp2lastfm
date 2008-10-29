@@ -33,12 +33,41 @@ AC_CONFIG_FILES([
 	src/Makefile
 ])
 
+#
+# Checking required XSD binder
+#
+AC_CHECK_PROG(HAVE_XSD, xsd, true, false)
+if test $HAVE_XSD; then
+	echo "Generating XML binder..."
+	xsd cxx-tree --generate-serialization --root-element mtp2lastfm \
+		--output-dir src/xsd --namespace-map =xml \
+		--hxx-suffix .h --cxx-suffix .cpp \
+		src/xsd/mtp2lastfm.xsd
+else
+	echo "Error! You need to install CodeSynthesis binder!"
+	echo "Check http://www.codesynthesis.com/products/xsd/download.xhtml"
+	exit -1
+fi
+
+
+#
+# Checking header files
+#
 AC_CHECK_HEADER(xsd/cxx/version.hxx, [], [
-	echo "Error! You need to install CodeSynthesis libs!"
+	echo "Error! You need to install CodeSynthesis dev files!"
 	echo "Check http://www.codesynthesis.com/products/xsd/download.xhtml"
 	exit -1
 	])
 
+AC_CHECK_HEADER(libmtp.h, [], [
+	echo "Error! You need to install libmtp dev files!"
+	exit -1
+	])
+
+
+#
+# Checking libs...
+#
 AC_CHECK_LIB(mtp, [LIBMTP_Get_Tracklisting_With_Callback], [], [
 	echo "Error! You need to have libmtp installed."
 	exit -1
