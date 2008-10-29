@@ -1,3 +1,8 @@
+0.1.1 - Oct 29 2008
+
+ - Added checks for library presence to configure script
+
+
 0.1 - Oct 28 2008
 
  - Upload to Last.fm

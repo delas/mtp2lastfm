@@ -22,7 +22,7 @@
 #                   MA  02111-1307, USA.
 #
 
-AC_INIT([mtp2lastfm], [0.1], [andrea@REMOVESPAMdelas.it])
+AC_INIT([mtp2lastfm], [0.1.1], [andrea@REMOVESPAMdelas.it])
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_CXX
