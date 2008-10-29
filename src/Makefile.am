@@ -38,3 +38,6 @@ mtp2lastfm_SOURCES = \
 	utils.h \
 	xsd/mtp2lastfm.cpp \
 	xsd/mtp2lastfm.h
+
+EXTRA_DIST = \
+	xsd/mtp2lastfm.xsd
