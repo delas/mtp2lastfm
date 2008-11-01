@@ -70,4 +70,11 @@ string toString(int n);
  */
 int timestamp();
 
+/**
+ * This function trims leading and trailing spaces of a string
+ *
+ * @param str the string to be trimmed
+ */
+void trim(string& str);
+
 #endif // UTILS_H
