@@ -159,7 +159,7 @@ class scrobbler
 	 * @param callback a callback function
 	 * @return a scrobble response value
 	 */
-	int scrobble(void (*callback)(int current, int total) = 0);
+	int scrobble(void (*callback)(int current, int total, scrobbler* const s) = 0);
 
 	/**
 	 * This method yust mark all the track to be scrobbled, without doing it

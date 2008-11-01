@@ -31,14 +31,17 @@ track::track(LIBMTP_track_t* track)
 	if (track->title != NULL)
 	{
 		m_track_title = track->title;
+		trim(m_track_title);
 	}
 	if (track->artist != NULL)
 	{
 		m_track_artist = track->artist;
+		trim(m_track_artist);
 	}
 	if (track->album != NULL)
 	{
 		m_album_title = track->album;
+		trim(m_album_title);
 	}
 	m_pos_on_album = track->tracknumber;
 	m_sec_length = track->duration / 1000; /* duration is in milliseconds */
@@ -48,9 +51,9 @@ track::track(LIBMTP_track_t* track)
 
 track::track(xml::track track)
 {
-	m_track_title = track.title();
-	m_track_artist = track.artist();
-	m_album_title = track.album();
+	m_track_title = track.title();   trim(m_track_title);
+	m_track_artist = track.artist(); trim(m_track_artist);
+	m_album_title = track.album();   trim(m_album_title);
 	m_pos_on_album = track.albumPosition();
 	m_sec_length = track.length();
 	m_play_count = track.playCount();
@@ -63,6 +66,13 @@ void track::setPlayCount(int total_play_count)
 	{
 		m_play_count = total_play_count;
 	}
+}
+
+
+bool track::isScrolleable() const
+{
+	bool check = (m_track_title != "") && (m_track_artist != "");
+	return check;
 }
 
 

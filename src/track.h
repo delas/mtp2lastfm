@@ -29,6 +29,7 @@
 
 #include <string>
 #include <libmtp.h>
+#include "utils.h"
 #include "xsd/mtp2lastfm.h"
 
 using std::string;
@@ -110,6 +111,14 @@ class track
 	 * @param total_play_count the total number of plays of this track
 	 */
 	void setPlayCount(int total_play_count);
+
+	/**
+	 * This method tells you if a track can be scrobbled (i.e. if all the
+	 * required filed are filled).
+	 *
+	 * @return true if the track is scrobblable, false otherwise
+	 */
+	bool isScrolleable() const;
 
 	/**
 	 * Equal operator overloading

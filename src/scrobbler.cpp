@@ -167,9 +167,13 @@ void scrobbler::fetch(const device& device)
 			{
 				/* we need to scrobble this track some times */
 				track& t = *element;
-				for (int j = 0; j < playcount - t.getPlayCount(); j++)
+				/* is this track able to be scrobbled? */
+				if (t.isScrolleable())
 				{
-					m_to_scrobble.push_back(t);
+					for (int j = 0; j < playcount - t.getPlayCount(); j++)
+					{
+						m_to_scrobble.push_back(t);
+					}
 				}
 			}
 		}
@@ -178,9 +182,13 @@ void scrobbler::fetch(const device& device)
 			/* this track has never been scrobbled (and listened?) */
 			if (vt[i].getPlayCount() > 0)
 			{
-				for (int j = 0; j < vt[i].getPlayCount(); j++)
+				/* is this track able to be scrobbled? */
+				if (vt[i].isScrolleable())
 				{
-					m_to_scrobble.push_back(vt[i]);
+					for (int j = 0; j < vt[i].getPlayCount(); j++)
+					{
+						m_to_scrobble.push_back(vt[i]);
+					}
 				}
 			}
 		}
@@ -188,7 +196,7 @@ void scrobbler::fetch(const device& device)
 }
 
 
-int scrobbler::scrobble(void (*callback)(int current, int total))
+int scrobbler::scrobble(void (*callback)(int current, int total, scrobbler* const s))
 {
 	lastfm_handshake();
 	srand((unsigned)time(0)); /* randomizer */
@@ -220,7 +228,7 @@ int scrobbler::scrobble(void (*callback)(int current, int total))
 			increaseScrobbledCount(t);
 			if (callback != 0)
 			{
-				callback(scrobbled_items, total_to_scrobble);
+				callback(scrobbled_items, total_to_scrobble, this);
 			}
 		} else {
 			m_last_error = out;
