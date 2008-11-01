@@ -38,6 +38,9 @@
 
 using namespace std;
 
+/* the config file name */
+string configfile = (string(getenv("HOME")) + "/.mtp2lastfm");
+
 
 void help(const char* cmd)
 {
@@ -47,6 +50,7 @@ void help(const char* cmd)
 	/* help content */
 	print("Basic usages: " << cmd << " [options]")
 	print("Options:")
+	print("  -a, --reset-auth    Reset the authentication data")
 	print("  -i, --import        Import all the player track, and mark as already scrobbled")
 	print("  -l, --list-devices  List all connected devices")
 	print("  -s, --stats         Print some statistics")
@@ -69,11 +73,12 @@ void version()
 	print("the GNU General Public License.")
 }
 
-void callback(int current, int total)
+void callback(int current, int total, scrobbler* const s)
 {
 	if (current % 10 == 0)
 	{
 		cout << endl << current << " of " << total << endl;
+		s->save(configfile);
 	}
 	else
 	{
@@ -88,6 +93,7 @@ int main(int argc, char* argv[])
 	bool flag_only_import = false; /* sets if just import the songs */
 	bool flag_only_list_device = false; /* sets if just list devices */
 	bool flag_only_stats = false; /* sets if just show some stats */
+	bool flag_reset_auth = false; /* resets the authentication data */
 	int flag_verbose_mode = 0; /* how much verbose (actually only 2 levels)? */
 
 	/* command line parsing */
@@ -98,15 +104,19 @@ int main(int argc, char* argv[])
 		{"import",       no_argument, 0, 'i'},
 		{"list-devices", no_argument, 0, 'l'},
 		{"stats",        no_argument, 0, 's'},
+		{"reset-auth",   no_argument, 0, 'a'},
 		{"verbose",      no_argument, 0, 'v'},
 		{"version",      no_argument, 0, 'V'},
 		{ 0, 0, 0, 0 }
 	};
-	while ((c = getopt_long(argc, argv, "hilsvV",
+	while ((c = getopt_long(argc, argv, "ahilsvV",
 	                        long_options, &option_index)) != -1)
 	{
 		switch (c)
 		{
+			case 'a':
+				flag_reset_auth = true;
+				break;
 			case 'h':
 				help(argv[0]);
 				return 0;
@@ -133,7 +143,6 @@ int main(int argc, char* argv[])
 
 	/* base objects */
 	vverbose("Internal objects declaration")
-	string configfile = (string(getenv("HOME")) + "/.mtp2lastfm");
 	device d;
 	vverbose("Internal objects successfully decleared and initialized")
 
@@ -226,7 +235,7 @@ int main(int argc, char* argv[])
 		d = vd[selected_device];
 	}
 
-	/* the user want to import the song data */
+	/* the user want to import the songs data */
 	if (flag_only_import)
 	{
 		print("Preparing for importing data...")
@@ -245,9 +254,16 @@ int main(int argc, char* argv[])
 
 	/* if here, the user want to scrobble */
 	/* check the lastfm account */
-	if (s.getUsername() == "")
+	if (s.getUsername() == "" || flag_reset_auth)
 	{
-		print("Last.fm accout not setted yet")
+		if (flag_reset_auth)
+		{
+			print("Resetting your Last.fm account")
+		}
+		else
+		{
+			print("Last.fm accout not setted yet")
+		}
 		string username, password;
 		cout << "Please insert your Last.fm username: ";
 		cin >> username;
@@ -290,8 +306,16 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		print("Damn! Scrobbling error (listened below)...")
-		print(s.getError())
-		return 1;
+		if (s.getError() == "BADAUTH\n")
+		{
+			print("Wrong username or password!")
+			return 1;
+		}
+		else
+		{
+			print("Damn! Scrobbling error (listened below)...")
+			print(s.getError())
+			return 1;
+		}
 	}
 }
