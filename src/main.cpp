@@ -39,7 +39,7 @@
 using namespace std;
 
 /* the config file name */
-string configfile = (string(getenv("HOME")) + "/.mtp2lastfm");
+string configfile;
 
 
 void help(const char* cmd)
@@ -48,7 +48,7 @@ void help(const char* cmd)
 	print("mtp2lastfm " << CLIENT_VERSION)
 	print("")
 	/* help content */
-	print("Basic usages: " << cmd << " [options]")
+	print("Basic usages: " << cmd << " [options] [config file]")
 	print("Options:")
 	print("  -a, --reset-auth    Reset the authentication data")
 	print("  -i, --import        Import all the player track, and mark as already scrobbled")
@@ -140,6 +140,16 @@ int main(int argc, char* argv[])
 		}
 	}
 
+	/* the user specified a custom config file? */
+	if (optind < argc)
+	{
+		verbose("Custom config file specified")
+		configfile = argv[argc-1];
+	}
+	else
+	{
+		configfile = (string(getenv("HOME")) + "/.mtp2lastfm");
+	}
 
 	/* base objects */
 	vverbose("Internal objects declaration")
