@@ -108,13 +108,13 @@ string scrobbler::getSubmissionPost(int current_sumbit,
 {
 	string temp;
 	string cur = toString(current_sumbit);
-	temp = "a[" + cur + "]=" + UrlEncodeString(track.getArtist()) + "&" +
-	       "t[" + cur + "]=" + UrlEncodeString(track.getTitle()) + "&" +
+	temp = "a[" + cur + "]=" + urlencode(track.getArtist()) + "&" +
+	       "t[" + cur + "]=" + urlencode(track.getTitle()) + "&" +
 	       "i[" + cur + "]=" + toString(play_timestamp) + "&" +
 	       "o[" + cur + "]=P&" +
 	       "r[" + cur + "]=" + "&" +
 	       "l[" + cur + "]=" + toString(track.getLength()) + "&" +
-	       "b[" + cur + "]=" + UrlEncodeString(track.getAlbumTitle()) + "&" +
+	       "b[" + cur + "]=" + urlencode(track.getAlbumTitle()) + "&" +
 	       "n[" + cur + "]=" + toString(track.getPositionOnAlbum()) + "&" +
 	       "m[" + cur + "]=" + "&";
 	return temp;

@@ -78,22 +78,12 @@ int timestamp();
 void trim(string& str);
 
 /**
- * URL encoding/decoding support function
- */
-int UrlDecode(const char *source, char *dest);
-
-/**
- * URL encoding/decoding support function
- */
-int UrlEncode(const char *source, char *dest, unsigned max);
-
-/**
- * This function decode a string to be as GET param
+ * Converts a char to a hex string
  *
- * @param encoded the string encoded
- * @return the decoded string
+ * @param dec the char to be converted
+ * @return the converted string
  */
-string UrlDecodeString(const std::string & encoded);
+string char2hex(char dec);
 
 /**
  * This function encode a string as GET param
@@ -101,7 +91,6 @@ string UrlDecodeString(const std::string & encoded);
  * @param decoded the string decoded
  * @return the encoded string
  */
-string UrlEncodeString(const std::string & decoded);
-
+string urlencode(const string &decoded);
 
 #endif // UTILS_H
