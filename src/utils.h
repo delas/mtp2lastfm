@@ -77,4 +77,31 @@ int timestamp();
  */
 void trim(string& str);
 
+/**
+ * URL encoding/decoding support function
+ */
+int UrlDecode(const char *source, char *dest);
+
+/**
+ * URL encoding/decoding support function
+ */
+int UrlEncode(const char *source, char *dest, unsigned max);
+
+/**
+ * This function decode a string to be as GET param
+ *
+ * @param encoded the string encoded
+ * @return the decoded string
+ */
+string UrlDecodeString(const std::string & encoded);
+
+/**
+ * This function encode a string as GET param
+ *
+ * @param decoded the string decoded
+ * @return the encoded string
+ */
+string UrlEncodeString(const std::string & decoded);
+
+
 #endif // UTILS_H
