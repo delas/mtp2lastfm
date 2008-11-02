@@ -172,11 +172,11 @@ string urlencode(const string &c)
 	int max = c.length();
 	for(int i=0; i<max; i++)
 	{
-		if ((48 <= c[i] && c[i] <= 57) ||            // 0-9
-			(65 <= c[i] && c[i] <= 90) ||            // abc...xyz
+		if ((48 <= c[i] && c[i] <=  57) ||           // 0-9
+			(65 <= c[i] && c[i] <=  90) ||           // abc...xyz
 			(97 <= c[i] && c[i] <= 122) ||           // ABC...XYZ
 			(c[i]=='~' || c[i]=='!' || c[i]=='*' ||
-			 c[i]=='(' || c[i]==')' || c[i]=='\'')   // ~!*()'
+			 c[i]=='(' || c[i]==')' || c[i]=='\'' )  // ~!*()'
 		)
 		{
 			escaped.append(&c[i], 1);
