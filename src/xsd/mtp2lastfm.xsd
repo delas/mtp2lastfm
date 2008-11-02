@@ -43,10 +43,10 @@
 				<xs:element name="title" type="xs:string" />
 				<xs:element name="artist" type="xs:string" />
 				<xs:element name="album" type="xs:string" />
-				<xs:element name="albumPosition" type="xs:positiveInteger" />
+				<xs:element name="albumPosition" type="xs:nonNegativeInteger" />
 				<!-- Track length in seconds -->
-				<xs:element name="length" type="xs:positiveInteger" />
-				<xs:element name="playCount" type="xs:positiveInteger" />
+				<xs:element name="length" type="xs:nonNegativeInteger" />
+				<xs:element name="playCount" type="xs:nonNegativeInteger" />
 			</xs:all>
 		</xs:complexType>
 	</xs:element>
