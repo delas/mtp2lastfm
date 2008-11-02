@@ -108,13 +108,13 @@ string scrobbler::getSubmissionPost(int current_sumbit,
 {
 	string temp;
 	string cur = toString(current_sumbit);
-	temp = "a[" + cur + "]=" + track.getArtist() + "&" +
-	       "t[" + cur + "]=" + track.getTitle() + "&" +
+	temp = "a[" + cur + "]=" + UrlEncodeString(track.getArtist()) + "&" +
+	       "t[" + cur + "]=" + UrlEncodeString(track.getTitle()) + "&" +
 	       "i[" + cur + "]=" + toString(play_timestamp) + "&" +
 	       "o[" + cur + "]=P&" +
 	       "r[" + cur + "]=" + "&" +
 	       "l[" + cur + "]=" + toString(track.getLength()) + "&" +
-	       "b[" + cur + "]=" + track.getAlbumTitle() + "&" +
+	       "b[" + cur + "]=" + UrlEncodeString(track.getAlbumTitle()) + "&" +
 	       "n[" + cur + "]=" + toString(track.getPositionOnAlbum()) + "&" +
 	       "m[" + cur + "]=" + "&";
 	return temp;
@@ -232,6 +232,15 @@ int scrobbler::scrobble(void (*callback)(int current, int total, scrobbler* cons
 			}
 		} else {
 			m_last_error = out;
+			m_last_error += "\n" + t.getTitle()
+			             +  "\n" + t.getArtist()
+			             +  "\n" + t.getAlbumTitle()
+			             +  "\n"
+			             +  "\n" + "Scrobbling URL:"
+			             +  "\n" + m_session_url
+			             +  "\n" + "Scrobbling param:"
+			             +  "\n" + param
+			             +  "\n";
 			return lastfm_responses::FAILED;
 		}
 	}
