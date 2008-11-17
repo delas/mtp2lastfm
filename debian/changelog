@@ -1,0 +1,7 @@
+mtp2lastfm (0.1.2-1ubuntu1) unstable; urgency=low
+
+  * Fixed BUG #2209866
+  * Added an optional param to specify a custom config filename
+
+ -- Andrea Burattin <andrea@delas.it>  Mon, 17 Nov 2008 11:56:25 +0100
+
