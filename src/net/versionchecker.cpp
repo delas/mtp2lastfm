@@ -4,11 +4,13 @@
 
 VersionChecker::VersionChecker(const QString& current_version,
 							   const QString& version_info_url,
+							   int delay,
 							   QObject *parent)
 		: QThread(parent)
 {
 	m_current_version = current_version;
 	m_version_info_url = version_info_url;
+	m_delay = delay;
 	m_http = new QHttp(this);
 	m_buffer = new QBuffer(this);
 	m_buffer->open(QIODevice::ReadWrite);
@@ -35,7 +37,7 @@ VersionChecker::~VersionChecker()
 
 void VersionChecker::run()
 {
-	sleep(2);
+	sleep(m_delay);
 	QUrl url(m_version_info_url);
 	QByteArray path = url.path().toAscii();
 
