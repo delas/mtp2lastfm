@@ -1,5 +1,5 @@
 #include "versionchecker.h"
-#include "mainwindow.h"
+#include "../view/mainwindow.h"
 
 
 VersionChecker::VersionChecker(const QString& current_version,
