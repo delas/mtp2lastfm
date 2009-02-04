@@ -50,6 +50,70 @@ void SQLiteORM::shutdown()
 }
 
 
+int SQLiteORM::getNumberOfDBTables()
+{
+	if (m_db.isOpen())
+	{
+		QSqlQuery query;
+		bool query_succeed = query.exec("SELECT COUNT(*) FROM sqlite_master")
+							 && query.first();
+		if (query_succeed)
+		{
+			return query.value(0).toInt();
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	return -1;
+}
+
+#include <iostream>
+using namespace std;
+
+bool SQLiteORM::execSQL(const QString& sql_query)
+{
+	if (!m_db.isOpen())
+	{
+		return false;
+	}
+
+	QSqlQuery query;
+	query.exec("BEGIN TRANSACTION");
+	bool query_succeed = true;
+	if (sql_query.contains(";", Qt::CaseInsensitive))
+	{
+		QStringList sql_queries = sql_query.split(";", QString::SkipEmptyParts);
+		QString sql_query_current;
+		for (int i = 0; i < sql_queries.size(); i++)
+		{
+			sql_query_current = sql_queries[i];
+			sql_query_current.trimmed();
+			if (sql_query_current != "")
+			{
+				sql_query_current.append(";");
+				query_succeed = query.exec(sql_query_current) && query_succeed;
+			}
+		}
+	}
+	else
+	{
+		query_succeed = query.exec(sql_query);
+	}
+	if (query_succeed)
+	{
+		query.exec("COMMIT TRANSACTION");
+	}
+	else
+	{
+		query.exec("ROLLBACK TRANSACTION");
+	}
+	query.exec("END TRANSACTION");
+	return query_succeed;
+}
+
+
 void SQLiteORM::addModelDescriptor(const QString& field_name,
 								   FIELD_TYPE field_type)
 {
@@ -173,7 +237,7 @@ bool SQLiteORM::load(int element_id)
 
 
 QList<SQLiteORM> SQLiteORM::getAll(QString where_condition, QString ordering,
-								   int from = 0, int limit = 999)
+								   int from, int limit)
 {
 	QList<SQLiteORM> fetched;
 	QString fields_name;
@@ -213,11 +277,13 @@ QList<SQLiteORM> SQLiteORM::getAll(QString where_condition, QString ordering,
 		sql_ordering.append("ORDER BY ").append(ordering);
 	}
 
-	QString sql_query = QString("SELECT %1 FROM %2 WHERE 1=1 %3 %4")
+	QString sql_query = QString("SELECT %1 FROM %2 WHERE 1=1 %3 %4 LIMIT %5,%6")
 						.arg(fields_name)
 						.arg(m_table_name)
 						.arg(where_condition)
-						.arg(sql_ordering);
+						.arg(sql_ordering)
+						.arg(from)
+						.arg(limit);
 
 	QSqlQuery query;
 	if (query.exec(sql_query))

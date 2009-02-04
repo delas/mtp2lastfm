@@ -2,7 +2,7 @@
 #define SQLITEORB_H
 
 #include <QtSql>
-#include <QString>
+#include <QStringList>
 #include <QHash>
 #include <QList>
 #include <QPair>
@@ -45,6 +45,20 @@ class SQLiteORM
 	 * This is the static method to shut down all the query to the database
 	 */
 	static void shutdown();
+
+	/**
+	 * This method can return the number of tables in the loaded database
+	 *
+	 * @return the number of tables in the loaded db, -1 if errors occur
+	 */
+	static int getNumberOfDBTables();
+
+	/**
+	 * This method executes an arbitrary SQL query
+	 *
+	 * @return true if the query suceed, false otherwise
+	 */
+	static bool execSQL(const QString& sql_query);
 
 	/**
 	 * This method adds a new field into the table descriptor
