@@ -2,8 +2,7 @@
 #define TRACK_H
 
 #include <QString>
-#include "../db/sqliteorb.h"
-
+#include "../db/sqliteorm.h"
 
 /**
  * This is the class that represent a single track, that is a single
@@ -16,7 +15,7 @@ class Track : public SQLiteORM
 	public:
 	/**
 	 * This method build a new track object with the specified values. If this
-	 * object is not in the 
+	 * object is not in the
 	 *
 	 * @param artist the artist name
 	 * @param title the track title

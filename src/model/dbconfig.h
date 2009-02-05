@@ -2,8 +2,7 @@
 #define DBCONFIG_H
 
 #include <QString>
-#include "../db/sqliteorb.h"
-
+#include "../db/sqliteorm.h"
 
 /**
  * This class is useful to get and set default program configuration values into
@@ -37,10 +36,13 @@ class DBConfig : public SQLiteORM
 	 */
 	void value(const QString& value);
 
+
 	private:
 	DBConfig();
 
-	void buildStructure();	
+
+	protected:
+	void buildStructure();
 };
 
 #endif // DBCONFIG_H

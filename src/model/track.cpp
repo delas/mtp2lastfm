@@ -3,33 +3,38 @@
 Track::Track()
 		: SQLiteORM()
 {
+	buildStructure();
 }
 
 
 Track Track::get(const QString& artist, const QString& title)
 {
+	Track t;
 	QString where_condition = QString("`title` = \"%1\" AND `artist` = \"%2\"")
 							  .arg(title)
 							  .arg(artist);
-	QList<Track> tracks getAll(where_condition);
+
+	QList<SQLiteORM> tracks = t.getAll(where_condition, "");
 	if (tracks.size() == 0)
 	{
-		Track t;
 		t.setArtist(artist);
 		t.setTitle(title);
+		t.m_fields["first_add"].first = QDateTime::currentDateTime();
+		t.m_fields["last_scrobble"].first = QDateTime::currentDateTime();
+		t.m_fields["scrobble_left"].first = 0;
 		t.save();
-		return t;
 	}
 	else
 	{
-		return tracks[0];
+		t.assignValue(tracks[0]);
 	}
+	return t;
 }
 
 
 void Track::buildStructure()
 {
-	setTableName("track");
+	setTableName("tracks");
 
 	addModelDescriptor("id", NUMERIC);
 	addModelDescriptor("album", TEXT);
@@ -96,7 +101,7 @@ int Track::getLength() const
 
 QString Track::getTitle() const
 {
-	return getField("title").toInt();
+	return getField("title").toString();
 }
 
 
