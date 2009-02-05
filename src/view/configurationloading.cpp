@@ -22,6 +22,8 @@ ConfigurationLoading::ConfigurationLoading(LoaderThread* loader,
 	m_loader = loader;
 	connect(m_loader, SIGNAL(updateProgress(const QString&, int)),
 		this, SLOT(updateProgress(const QString&, int)));
+	connect(m_loader, SIGNAL(startMain()),
+		this, SLOT(startMain()));
 }
 
 
@@ -35,6 +37,12 @@ void ConfigurationLoading::updateProgress(const QString& action, int steps)
 {
 	m_ui->label->setText(action);
 	m_ui->progressBar->setValue(steps);
+}
+
+
+void ConfigurationLoading::startMain()
+{
+	close();
 }
 
 

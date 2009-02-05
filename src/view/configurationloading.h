@@ -28,6 +28,8 @@ class ConfigurationLoading : public QDialog
 	 * @param steps new, percentual, of completed job
 	 */
 	void updateProgress(const QString& action, int steps);
+	void startMain();
+	inline void reject() {}
 
 	protected:
 	virtual void changeEvent(QEvent *e);
