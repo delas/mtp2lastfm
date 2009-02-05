@@ -55,10 +55,12 @@ class VersionChecker : public QThread
 	 * @param remote_version the new version available
 	 * @param remote_date the date of the new release
 	 * @param remote_note some note in the new release
+	 * @param remote_url the URL to download the new release
 	 */
 	void updateVersionLabels(const QString& remote_version,
 							 const QString& remote_date,
-							 const QString& remote_note);
+							 const QString& remote_note,
+							 const QString& remote_url);
 
 	private slots:
 	/**

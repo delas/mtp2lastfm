@@ -127,12 +127,15 @@ void VersionChecker::httpDone(bool errors)
 								  .toElement().text();
 			QString remote_note = doc.elementsByTagName("note").item(0)
 								  .toElement().text();
+			QString remote_url = doc.elementsByTagName("download").item(0)
+								  .toElement().text();
 
 			if (remote_version != m_current_version)
 			{
 				emit updateVersionLabels(remote_version,
 										 remote_date,
-										 remote_note);
+										 remote_note,
+										 remote_url);
 			}
 		}
 	}
