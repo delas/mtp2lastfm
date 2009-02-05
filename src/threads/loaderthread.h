@@ -4,8 +4,11 @@
 #include <QThread>
 #include <QtXml>
 #include "../view/configurationloading.h"
-#include "../db/sqliteorb.h"
+#include "../view/mainwindow.h"
+#include "../db/sqliteorm.h"
 #include "../db/base_sql_structure.h"
+#include "../model/dbconfig.h"
+#include "../model/track.h"
 
 /**
  *
@@ -34,11 +37,13 @@ class LoaderThread : public QThread
 	 * @param steps new, percentual, of completed job
 	 */
 	void updateProgress(const QString& action, int steps);
+	void startMain();
 
 	private:
 	QString m_db_path;
 	QString m_old_xml_file_path;
 	ConfigurationLoading* m_configurationloading;
+	MainWindow* m_mainwindow;
 };
 
 #endif // LOADERTHREAD_H
