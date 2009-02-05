@@ -149,6 +149,16 @@ class SQLiteORM
 							int from = 0, int limit = 999);
 
 	/**
+	 * Method to copy the invoking object values
+	 *
+	 * @param original the object to get copied
+	 * @param concretized set the concretization param
+	 */
+	void assignValue(const SQLiteORM& original,
+					 bool concretized = true,
+					 bool removed = false);
+
+	/**
 	 * Method to fisically remove a logic object
 	 *
 	 * @return true if the object has been removed, false otherwise
@@ -185,11 +195,13 @@ class SQLiteORM
 	 */
 	bool create();
 
+
+	protected:
 	/**
 	 * This method build the object structure, in order to be mapped into the
 	 * database.
 	 */
-	virtual void buildStructure() = 0;
+	virtual void buildStructure();
 
 
 	/* database management */

@@ -1,4 +1,4 @@
-#include "sqliteorb.h"
+#include "sqliteorm.h"
 
 /* static members initialization */
 QSqlDatabase SQLiteORM::m_db = QSqlDatabase::addDatabase("QSQLITE");
@@ -71,8 +71,6 @@ int SQLiteORM::getNumberOfDBTables()
 	return -1;
 }
 
-#include <iostream>
-using namespace std;
 
 bool SQLiteORM::execSQL(const QString& sql_query)
 {
@@ -281,7 +279,7 @@ QList<SQLiteORM> SQLiteORM::getAll(QString where_condition, QString ordering,
 
 	QString sql_query = QString("SELECT %1 FROM %2 WHERE 1=1 %3 %4 LIMIT %5,%6")
 						.arg(fields_name)
-						.arg(m_table_name)
+						.arg(getTableName())
 						.arg(where_condition)
 						.arg(sql_ordering)
 						.arg(from)
@@ -308,6 +306,21 @@ QList<SQLiteORM> SQLiteORM::getAll(QString where_condition, QString ordering,
 		m_last_error = query.lastError().text();
 	}
 	return fetched;
+}
+
+
+void SQLiteORM::assignValue(const SQLiteORM& original,
+							bool concretized,
+							bool removed)
+{
+	QList<QString> keys = m_fields.keys();
+	for (int i = 0; i < keys.size(); i++)
+	{
+		m_fields[keys[i]].first = original.m_fields[keys[i]].first;
+		m_fields[keys[i]].second = original.m_fields[keys[i]].second;
+	}
+	m_concretized = concretized;
+	m_removed = removed;
 }
 
 
@@ -434,7 +447,6 @@ bool SQLiteORM::create()
 							 .arg(m_table_name);
 	QString sql_query_unlock = QString("UNLOCK TABLE");
 
-
 	QSqlQuery query;
 	query.exec("BEGIN TRANSACTION");
 	bool query_succeed = query.exec(sql_query);
@@ -454,4 +466,9 @@ bool SQLiteORM::create()
 	}
 	query.exec("END TRANSACTION");
 	return query_succeed;
+}
+
+
+void SQLiteORM::buildStructure()
+{
 }
