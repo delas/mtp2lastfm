@@ -18,8 +18,10 @@ class Track : public SQLiteORM
 	 * This method build a new track object with the specified values. If this
 	 * object is not in the 
 	 *
+	 * @param artist the artist name
+	 * @param title the track title
 	 */
-	Track(const QString& artist, const QString& title);
+	static Track get(const QString& artist, const QString& title);
 
 	/**
 	 * This method gets the album title

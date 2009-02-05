@@ -6,9 +6,24 @@ Track::Track()
 }
 
 
-Track::Track(const QString& artist, const QString& title)
-		: SQLiteORM()
+Track Track::get(const QString& artist, const QString& title)
 {
+	QString where_condition = QString("`title` = \"%1\" AND `artist` = \"%2\"")
+							  .arg(title)
+							  .arg(artist);
+	QList<Track> tracks getAll(where_condition);
+	if (tracks.size() == 0)
+	{
+		Track t;
+		t.setArtist(artist);
+		t.setTitle(title);
+		t.save();
+		return t;
+	}
+	else
+	{
+		return tracks[0];
+	}
 }
 
 
