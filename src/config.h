@@ -9,6 +9,9 @@ const QString CLIENT_ID = "mtp";
 /** The current client version */
 const QString CLIENT_VERSION = "1.0-prealpha";
 
+/** The URL to check for new version */
+const QString VERSION_CHECKER_URL = "http://home.delas.it/~delas/data.php";
+
 /** The user agent used for the cURL calls */
 const QString USER_AGENT =
 "Mozilla/5.0 (X11; U; Linux i686; it; rv:1.9b5) Gecko/2008050509 Firefox/3.0b5";
