@@ -9,6 +9,8 @@ SQLiteORM::SQLiteORM()
 {
 	m_concretized = false;
 	m_removed = true;
+
+	buildStructure();
 }
 
 

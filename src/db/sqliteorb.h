@@ -185,6 +185,13 @@ class SQLiteORM
 	 */
 	bool create();
 
+	/**
+	 * This method build the object structure, in order to be mapped into the
+	 * database.
+	 */
+	virtual void buildStructure() = 0;
+
+
 	/* database management */
 	static QSqlDatabase m_db;  /**< Database object */
 	static QString* m_db_path; /**< Database file path */
