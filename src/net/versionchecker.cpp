@@ -109,6 +109,7 @@ void VersionChecker::run()
 
 	m_http->setHost(url.host());
 	m_http->get(path, m_buffer);
+	qDebug("VersionChecker : Remote request submitted");
 }
 
 
@@ -118,6 +119,7 @@ void VersionChecker::httpDone(bool errors)
 
 	if (!errors)
 	{
+		qDebug("VersionChecker : Connection established");
 		QDomDocument doc;
 		if(doc.setContent(m_buffer->data()))
 		{
@@ -129,6 +131,7 @@ void VersionChecker::httpDone(bool errors)
 								  .toElement().text();
 			QString remote_url = doc.elementsByTagName("download").item(0)
 								  .toElement().text();
+			qDebug("VersionChecker : Remote version: %s", remote_version.toStdString().c_str());
 
 			if (remote_version != m_current_version)
 			{
@@ -138,5 +141,9 @@ void VersionChecker::httpDone(bool errors)
 										 remote_url);
 			}
 		}
+	}
+	else
+	{
+		qDebug("VersionChecker : Connection error");
 	}
 }

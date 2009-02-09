@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QtNetwork>
 #include <QtXml>
+#include <QDebug>
 
 /**
  * This is the class that allow to check if there is a new version of the
