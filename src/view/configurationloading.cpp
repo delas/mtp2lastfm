@@ -21,9 +21,9 @@ ConfigurationLoading::ConfigurationLoading(LoaderThread* loader,
 
 	m_loader = loader;
 	connect(m_loader, SIGNAL(updateProgress(const QString&, int)),
-		this, SLOT(updateProgress(const QString&, int)));
+			this, SLOT(updateProgress(const QString&, int)));
 	connect(m_loader, SIGNAL(startMain()),
-		this, SLOT(startMain()));
+			this, SLOT(startMain()));
 }
 
 
@@ -42,7 +42,7 @@ void ConfigurationLoading::updateProgress(const QString& action, int steps)
 
 void ConfigurationLoading::startMain()
 {
-	close();
+	accept();
 }
 
 

@@ -26,13 +26,8 @@
    </item>
    <item>
     <widget class="QLabel" name="label">
-     <property name="font">
-      <font>
-       <italic>true</italic>
-      </font>
-     </property>
      <property name="text">
-      <string>\</string>
+      <string/>
      </property>
     </widget>
    </item>
