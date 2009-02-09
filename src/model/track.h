@@ -2,6 +2,7 @@
 #define TRACK_H
 
 #include <QString>
+#include <libmtp.h>
 #include "../db/sqliteorm.h"
 
 /**
@@ -19,8 +20,38 @@ class Track : public SQLiteORM
 	 *
 	 * @param artist the artist name
 	 * @param title the track title
+	 * @return the required track
 	 */
 	static Track get(const QString& artist, const QString& title);
+
+	/**
+	 * This method fetches all the tracks already scrobbled
+	 *
+	 * @return a track objects list
+	 */
+	static QList<Track> getScrobbled();
+
+	/**
+	 * This method fetches all the tracks to be scrobbled
+	 *
+	 * @return a track objects list
+	 */
+	static QList<Track> getToScrobble();
+
+	/**
+	 * This method counts the tracks to be scrobbled
+	 *
+	 * @param list the list of tracks to be scrobbled
+	 * @return the number of scrobbling
+	 */
+	static int getToScrobbleCount(QList<Track> list);
+
+	/**
+	 * This is the constructor from a libmtp track
+	 *
+	 * @param track the libmtp track element
+	 */
+	Track(LIBMTP_track_t* track);
 
 	/**
 	 * This method gets the album title
@@ -134,6 +165,13 @@ class Track : public SQLiteORM
 	 * @param title the track title
 	 */
 	void setTitle(const QString& title);
+
+	/**
+	 * This method sets the scrobble times
+	 *
+	 * @param times number os scrobble done for the track
+	 */
+	void scrobbled(int times);
 
 
 	private:
