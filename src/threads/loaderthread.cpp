@@ -22,9 +22,13 @@ void LoaderThread::run()
 	emit updateProgress(tr("Checking database presence..."), 5);
 	if(SQLiteORM::initDB(m_db_path))
 	{
+		qDebug("LoaderThread : Database initialized");
+
 		emit updateProgress(tr("Database connected!"), 10);
 		if (SQLiteORM::getNumberOfDBTables() == 0)
 		{
+			qDebug("LoaderThread : Database empty");
+
 			emit updateProgress(tr("Database empty, creating tables..."), 20);
 			SQLiteORM::execSQL(SQL_CREATE_TABLES);
 			emit updateProgress(tr("Inserting base rows..."), 27);
@@ -35,6 +39,8 @@ void LoaderThread::run()
 			QFile xml_old(m_old_xml_file_path);
 			if (xml_old.exists())
 			{
+				qDebug("LoaderThread : Found an XML file to import");
+
 				emit updateProgress(tr("File exists, importing..."), 35);
 				if (xml_old.open(QIODevice::ReadOnly))
 				{
@@ -43,16 +49,23 @@ void LoaderThread::run()
 					{
 						emit updateProgress(tr("Loading user info..."),
 											40);
-						DBConfig::get("LASTFM_USERNAME").value(
-							doc.elementsByTagName("username").item(0)
-								.toElement().text());
-						DBConfig::get("LASTFM_PASSHASH").value(
-							doc.elementsByTagName("passwordMd5Hash").item(0)
-								.toElement().text());
+						QString lastfm_username = doc
+												  .elementsByTagName("username")
+												  .item(0).toElement().text();
+						DBConfig::get("LASTFM_USERNAME").value(lastfm_username);
+						qDebug("LoaderThread : LASTFM_USERNAME = %s", lastfm_username.toStdString().c_str());
+
+						QString lastfm_pass = doc
+											  .elementsByTagName("passwordMd5Hash")
+											  .item(0).toElement().text();
+						DBConfig::get("LASTFM_PASSHASH").value(lastfm_pass);
+						qDebug("LoaderThread : LASTFM_PASSHASH = %s", lastfm_pass.toStdString().c_str());
 
 						emit updateProgress(tr("Loading scrobbled tracks..."),
 											45);
 						QDomNodeList list = doc.elementsByTagName("track");
+						qDebug("LoaderThread : Document to import: %d", list.size());
+
 						for (int i = 0; i < list.size(); i++)
 						{
 							QString title =
@@ -67,6 +80,8 @@ void LoaderThread::run()
 									list.at(i).firstChildElement("length").text().toInt();
 							int play_count =
 									list.at(i).firstChildElement("playCount").text().toInt();
+							qDebug("LoaderThread : Importing %d \t %s",
+								   i, title.toStdString().c_str());
 
 							Track t = Track::get(artist, title);
 							t.setAlbum(album);

@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QtXml>
+#include <QDebug>
 #include "../view/configurationloading.h"
 #include "../view/mainwindow.h"
 #include "../db/sqliteorm.h"
