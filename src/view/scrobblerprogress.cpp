@@ -71,5 +71,5 @@ void ScrobblerProgress::errorCatched(const QString& error)
 
 void ScrobblerProgress::on_buttonBox_accepted()
 {
-	close();
+	accept();
 }

@@ -64,5 +64,5 @@ void TracksImport::errorCatched(const QString& error)
 
 void TracksImport::on_buttonBox_accepted()
 {
-	close();
+	accept();
 }

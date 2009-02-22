@@ -45,5 +45,5 @@ void NewVersionDialog::changeEvent(QEvent *e)
 
 void NewVersionDialog::on_buttonBox_accepted()
 {
-	close();
+	accept();
 }
