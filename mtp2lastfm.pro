@@ -11,7 +11,6 @@ SOURCES += src/main.cpp \
     src/view/configurationloading.cpp \
     src/threads/loaderthread.cpp \
     src/net/versionchecker.cpp \
-    src/model/track.cpp \
     src/model/dbconfig.cpp \
     src/db/sqliteorm.cpp \
     src/view/newversiondialog.cpp \
@@ -23,14 +22,14 @@ SOURCES += src/main.cpp \
     src/threads/scrobbler.cpp \
     src/view/scrobblerprogress.cpp \
     src/model/md5.cpp \
-    src/view/authenticationdialog.cpp
+    src/view/authenticationdialog.cpp \
+    src/model/track.cpp
 HEADERS += src/view/mainwindow.h \
     src/config.h \
     src/view/configurationloading.h \
     src/threads/loaderthread.h \
     src/net/versionchecker.h \
     src/db/base_sql_structure.h \
-    src/model/track.h \
     src/model/dbconfig.h \
     src/db/sqliteorm.h \
     src/view/newversiondialog.h \
@@ -42,7 +41,8 @@ HEADERS += src/view/mainwindow.h \
     src/threads/scrobbler.h \
     src/view/scrobblerprogress.h \
     src/model/md5.h \
-    src/view/authenticationdialog.h
+    src/view/authenticationdialog.h \
+    src/model/track.h
 FORMS += src/view/mainwindow.ui \
     src/view/configurationloading.ui \
     src/view/newversiondialog.ui \

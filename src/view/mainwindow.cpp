@@ -78,6 +78,13 @@ void MainWindow::updateTracksListsHeader()
 }
 
 
+void MainWindow::closeEvent(QCloseEvent*)
+{
+	qDebug("Shutting down database connection...");
+	SQLiteORM::shutdown();
+}
+
+
 void MainWindow::updateScrobbledTracksLists()
 {
 	qDebug("MainWindow : Updating scrobble track list");
@@ -92,18 +99,21 @@ void MainWindow::updateScrobbledTracksLists()
 	QList<Track> t = Track::getScrobbled();
 	for (int i = 0; i < t.size(); i++)
 	{
-		row.clear();
-		row.append(new QStandardItem(t[i].getArtist()));
-		row.append(new QStandardItem(t[i].getTitle()));
-		row.append(new QStandardItem(t[i].getAlbum()));
-		row.append(new QIntItem(t[i].getScrobbleDone()));
-		m_scrobbled_tracks->appendRow(row);
+		if (t[i].getScrobbleDone() > 0)
+		{
+			row.clear();
+			row.append(new QStandardItem(t[i].getArtist()));
+			row.append(new QStandardItem(t[i].getTitle()));
+			row.append(new QStandardItem(t[i].getAlbum()));
+			row.append(new QIntItem(t[i].getScrobbleDone()));
+			m_scrobbled_tracks->appendRow(row);
 
-		m_scrobbled_tracks->item(i, 3)->setData(t[i].getScrobbleDone());
-		m_scrobbled_tracks->item(i, 3)->setTextAlignment(Qt::AlignRight);
-		m_scrobbled_tracks->item(i, 0)->setTextAlignment(Qt::AlignRight);
+			m_scrobbled_tracks->item(i, 3)->setData(t[i].getScrobbleDone());
+			m_scrobbled_tracks->item(i, 3)->setTextAlignment(Qt::AlignRight);
+			m_scrobbled_tracks->item(i, 0)->setTextAlignment(Qt::AlignRight);
+		}
 	}
-	ui->scrobbledTree->sortByColumn(0, Qt::AscendingOrder);
+	ui->scrobbledTree->sortByColumn(3, Qt::DescendingOrder);
 	qDebug("MainWindow : Scrobble track list updating complete");
 }
 
@@ -132,7 +142,7 @@ void MainWindow::updateToScrobbleTracksLists()
 		m_to_scrobble_tracks->item(i, 3)->setTextAlignment(Qt::AlignRight);
 		m_to_scrobble_tracks->item(i, 0)->setTextAlignment(Qt::AlignRight);
 	}
-	ui->toScrobbleTree->sortByColumn(0, Qt::AscendingOrder);
+	ui->toScrobbleTree->sortByColumn(3, Qt::DescendingOrder);
 	qDebug("MainWindow : To scrobble track list updating complete");
 }
 

@@ -32,6 +32,9 @@ class MainWindow : public QMainWindow
 	void updateToScrobbleTracksLists();
 	void updateTracksListsHeader();
 
+	protected:
+	virtual void closeEvent(QCloseEvent* event);
+
 	public slots:
 	void updateVersionLabels(const QString&, const QString&,
 							 const QString&, const QString&);
