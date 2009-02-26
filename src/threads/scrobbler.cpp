@@ -143,7 +143,6 @@ int Scrobbler::lastfm_handshake()
 	return lastfm_responses::FAILED;
 }
 
-
 int Scrobbler::lastfm_scrobble_track(Track& t)
 {
 	int scrobble_times = 0;
@@ -152,13 +151,13 @@ int Scrobbler::lastfm_scrobble_track(Track& t)
 		/* generate the post parameters */
 		QString post_parameters;
 		post_parameters.append("s=").append(m_session_id);
-		post_parameters.append("&a[0]=").append(QString(QUrl::toPercentEncoding(t.getArtist())));
-		post_parameters.append("&t[0]=").append(QString(QUrl::toPercentEncoding(t.getTitle())));
+		post_parameters.append("&a[0]=").append(QString(QUrl::toPercentEncoding(t.getArtist().toAscii())));
+		post_parameters.append("&t[0]=").append(QString(QUrl::toPercentEncoding(t.getTitle().toAscii())));
 		post_parameters.append("&i[0]=").append(QString("%1").arg(m_timestamp_scrobble));
 		post_parameters.append("&o[0]=").append("P");
 		post_parameters.append("&r[0]=").append("");
 		post_parameters.append("&l[0]=").append(QString("%1").arg(t.getLength()));
-		post_parameters.append("&b[0]=").append(QString(QUrl::toPercentEncoding(t.getAlbum())));
+		post_parameters.append("&b[0]=").append(QString(QUrl::toPercentEncoding(t.getAlbum().toAscii())));
 		post_parameters.append("&n[0]=").append(QString("%1").arg(t.getAlbumPosition()));
 		post_parameters.append("&m[0]=").append("");
 
@@ -189,8 +188,6 @@ int Scrobbler::lastfm_scrobble_track(Track& t)
 		/* buffer cleaning */
 		m_buffer->close(); delete m_buffer;
 		QStringList responses = response.split("\n");
-
-		qDebug(response.toStdString().c_str());
 
 		if (responses[0] == "OK")
 		{
