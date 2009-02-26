@@ -231,7 +231,6 @@ void Track::setScrobbleDone(int scrobble_done)
 
 void Track::setTotalListenings(int listening)
 {
-	setFieldValue("scrobble_done", 0);
 	int scrobble_done = getScrobbleDone();
 	if (listening > scrobble_done)
 	{
