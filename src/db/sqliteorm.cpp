@@ -1,7 +1,6 @@
 #include "sqliteorm.h"
 
 /* static members initialization */
-QSqlDatabase SQLiteORM::m_db = QSqlDatabase::addDatabase("QSQLITE");
 QString* SQLiteORM::m_db_path = 0;
 
 
@@ -16,7 +15,9 @@ SQLiteORM::SQLiteORM()
 
 bool SQLiteORM::initDB(const QString& db_path)
 {
-	if (!m_db_path || *m_db_path != db_path || !m_db.isOpen())
+	QSqlDatabase::addDatabase("QSQLITE");
+	QSqlDatabase m_db = QSqlDatabase::database();
+	if (!m_db_path || *m_db_path != db_path)
 	{
 		/* members clean up */
 		if (!m_db_path)
@@ -45,15 +46,18 @@ bool SQLiteORM::initDB(const QString& db_path)
 
 void SQLiteORM::shutdown()
 {
+	QSqlDatabase m_db = QSqlDatabase::database();
 	if (m_db.isOpen())
 	{
 		m_db.close();
+		qDebug("Database connection closed!");
 	}
 }
 
 
 int SQLiteORM::getNumberOfDBTables()
 {
+	QSqlDatabase m_db = QSqlDatabase::database();
 	if (m_db.isOpen())
 	{
 		QSqlQuery query;
@@ -74,6 +78,7 @@ int SQLiteORM::getNumberOfDBTables()
 
 bool SQLiteORM::execSQL(const QString& sql_query)
 {
+	QSqlDatabase m_db = QSqlDatabase::database();
 	if (!m_db.isOpen())
 	{
 		return false;

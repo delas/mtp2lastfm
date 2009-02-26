@@ -205,7 +205,6 @@ class SQLiteORM
 
 
 	/* database management */
-	static QSqlDatabase m_db;  /**< Database object */
 	static QString* m_db_path; /**< Database file path */
 
 	/* ORB base members */
