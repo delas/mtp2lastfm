@@ -107,10 +107,6 @@ void MainWindow::updateScrobbledTracksLists()
 			row.append(new QStandardItem(t[i].getAlbum()));
 			row.append(new QIntItem(t[i].getScrobbleDone()));
 			m_scrobbled_tracks->appendRow(row);
-
-			m_scrobbled_tracks->item(i, 3)->setData(t[i].getScrobbleDone());
-			m_scrobbled_tracks->item(i, 3)->setTextAlignment(Qt::AlignRight);
-			m_scrobbled_tracks->item(i, 0)->setTextAlignment(Qt::AlignRight);
 		}
 	}
 	ui->scrobbledTree->sortByColumn(3, Qt::DescendingOrder);
@@ -138,9 +134,6 @@ void MainWindow::updateToScrobbleTracksLists()
 		row.append(new QStandardItem(t[i].getAlbum()));
 		row.append(new QIntItem(t[i].getScrobbleLeft()));
 		m_to_scrobble_tracks->appendRow(row);
-		m_to_scrobble_tracks->item(i, 3)->setData(t[i].getScrobbleLeft());
-		m_to_scrobble_tracks->item(i, 3)->setTextAlignment(Qt::AlignRight);
-		m_to_scrobble_tracks->item(i, 0)->setTextAlignment(Qt::AlignRight);
 	}
 	ui->toScrobbleTree->sortByColumn(3, Qt::DescendingOrder);
 	qDebug("MainWindow : To scrobble track list updating complete");

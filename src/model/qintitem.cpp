@@ -3,6 +3,7 @@
 QIntItem::QIntItem(int value)
 		: QStandardItem(QString("%1").arg(value))
 {
+	setData(QString("%1").arg(value));
 }
 
 

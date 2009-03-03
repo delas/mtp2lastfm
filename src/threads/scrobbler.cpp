@@ -42,7 +42,11 @@ void Scrobbler::run()
 	{
 		QList<Track> to_scrobble = Track::getToScrobble();
 		int curr_track_position = -1;
-		m_timestamp_scrobble = QDateTime::currentDateTime().toTime_t()-((m_to_scrobble_count-m_scrobble_progress)*AVG_SONG_LENGTH);
+		m_timestamp_scrobble = QDateTime::currentDateTime().toTime_t();
+		foreach(Track t, to_scrobble)
+		{
+			m_timestamp_scrobble -= t.getLength() * t.getScrobbleLeft();
+		}
 		m_to_scrobble_count = Track::getToScrobbleCount(to_scrobble);
 		m_scrobble_progress = 1;
 
@@ -115,7 +119,7 @@ int Scrobbler::lastfm_handshake()
 	m_buffer->close(); delete m_buffer;
 	QStringList responses = response.split("\n");
 
-	qDebug(response.toStdString().c_str());
+//	qDebug(response.toStdString().c_str());
 
 	if (responses[0] == "OK")
 	{
@@ -188,6 +192,9 @@ int Scrobbler::lastfm_scrobble_track(Track& t)
 		/* buffer cleaning */
 		m_buffer->close(); delete m_buffer;
 		QStringList responses = response.split("\n");
+//		qDebug(QString(" > %1\n    Returns: %2\n")
+//			   .append(post_parameters)
+//			   .append(responses[0]).toStdString().c_str());
 
 		if (responses[0] == "OK")
 		{
@@ -195,7 +202,7 @@ int Scrobbler::lastfm_scrobble_track(Track& t)
 			t.save();
 			scrobble_times++;
 			m_scrobble_progress++;
-			m_timestamp_scrobble += AVG_SONG_LENGTH;
+			m_timestamp_scrobble += t.getLength();
 		}
 		else if (responses[0] == "BADSESSION")
 		{

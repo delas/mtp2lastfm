@@ -80,8 +80,8 @@ void LoaderThread::run()
 									list.at(i).firstChildElement("length").text().toInt();
 							int play_count =
 									list.at(i).firstChildElement("playCount").text().toInt();
-							qDebug("LoaderThread : Importing %d \t %s",
-								   i, title.toStdString().c_str());
+//							qDebug("LoaderThread : Importing %d \t %s",
+//								   i, title.toStdString().c_str());
 
 							Track t = Track::get(artist, title);
 							t.setAlbum(album);

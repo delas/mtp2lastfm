@@ -4,18 +4,16 @@
 #include <QString>
 
 /** The client identifier */
-//const QString CLIENT_ID = "mtp";
-const QString CLIENT_ID = "tst";
+const QString CLIENT_ID = "mtp";
+//const QString CLIENT_ID = "tst";
 
 /** The current client version */
-//const QString CLIENT_VERSION = "1.0-prealpha";
 const QString CLIENT_VERSION = "1.0";
+//const QString CLIENT_VERSION = "1.0";
 
 /** The URL to check for new version */
-const QString VERSION_CHECKER_URL = "http://home.delas.it/~delas/data.php";
-
-/** Average song length (used to simulate the "listening") */
-const int AVG_SONG_LENGTH = 130; /* seconds */
+const QString VERSION_CHECKER_URL =
+		"http://www.delas.it/public/projects/mtp2lastfm/last_release.php";
 
 /** The url for the Last.fm handshake */
 const QString LASTFM_HANDSHAKE = "http://post.audioscrobbler.com/";
