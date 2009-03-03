@@ -8,7 +8,7 @@ const QString CLIENT_ID = "mtp";
 //const QString CLIENT_ID = "tst";
 
 /** The current client version */
-const QString CLIENT_VERSION = "1.0";
+const QString CLIENT_VERSION = "1.0-alpha";
 //const QString CLIENT_VERSION = "1.0";
 
 /** The URL to check for new version */
