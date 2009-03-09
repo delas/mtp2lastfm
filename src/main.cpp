@@ -42,8 +42,7 @@ int main(int argc, char *argv[])
 {
 	QString param;
 	QString db_path(getenv("HOME"));
-//	db_path = db_path.append("/.mtp2lastfm.db");
-	db_path = "mtp2lastfm.db";
+	db_path = db_path.append("/.mtp2lastfm.db");
 
 	if (argc > 1)
 	{
