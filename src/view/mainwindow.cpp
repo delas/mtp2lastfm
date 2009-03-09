@@ -200,8 +200,10 @@ void MainWindow::on_actionScrobble_triggered()
 
 void MainWindow::on_actionSetAuthenticationData_triggered()
 {
-	AuthenticationDialog* ad = new AuthenticationDialog(this);
-	ad->show();
+//	AuthenticationDialog* ad = new AuthenticationDialog(this);
+//	ad->show();
+	PreferencesDialog* pd = new PreferencesDialog(this);
+	pd->show();
 }
 
 

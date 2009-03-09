@@ -6,7 +6,7 @@
 #include <QStandardItemModel>
 #include <QFlags>
 #include "newversiondialog.h"
-#include "authenticationdialog.h"
+#include "preferencesdialog.h"
 #include "../net/versionchecker.h"
 #include "../threads/devicepoller.h"
 #include "../threads/tracksimporter.h"

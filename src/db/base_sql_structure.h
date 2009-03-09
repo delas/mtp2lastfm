@@ -29,8 +29,13 @@ const QString SQL_CREATE_TABLES =
  * Database default fields
  */
 const QString SQL_BASE_INSERT =
-		"INSERT INTO config (name, value) VALUES (\"DB_VERSION\", \"1.0\");"
+		"INSERT INTO config (name, value) VALUES (\"DB_VERSION\", \"1.1\");"
 		"INSERT INTO config (name) VALUES (\"LASTFM_USERNAME\");"
-		"INSERT INTO config (name) VALUES (\"LASTFM_PASSHASH\");";
+		"INSERT INTO config (name) VALUES (\"LASTFM_PASSHASH\");"
+		"INSERT INTO config (name) VALUES (\"PROXY_USAGE\");"
+		"INSERT INTO config (name) VALUES (\"PROXY_HOST\");"
+		"INSERT INTO config (name) VALUES (\"PROXY_PORT\");"
+		"INSERT INTO config (name) VALUES (\"PROXY_USERNAME\");"
+		"INSERT INTO config (name) VALUES (\"PROXY_PASSWORD\");";
 
 #endif // BASE_SQL_STRUCTURE_H

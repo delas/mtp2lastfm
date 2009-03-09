@@ -5,6 +5,6 @@
         <file>refresh.png</file>
         <file>lastfm.png</file>
         <file>quit.png</file>
-        <file>user.png</file>
+        <file>preferences.png</file>
     </qresource>
 </RCC>

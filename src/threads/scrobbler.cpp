@@ -4,6 +4,16 @@ Scrobbler::Scrobbler(QObject *parent)
 		: QThread(parent)
 {
 	m_http = new QHttp(this);
+
+	// check if i have to use a proxy
+	if (DBConfig::get("PROXY_USAGE").value() == "true")
+	{
+		m_http->setProxy(DBConfig::get("PROXY_HOST").value(),
+						 DBConfig::get("PROXY_PORT").value().toInt(),
+						 DBConfig::get("PROXY_USERNAME").value(),
+						 DBConfig::get("PROXY_PASSWORD").value());
+	}
+
 	m_buffer = new QBuffer(this);
 	m_buffer->open(QIODevice::ReadWrite);
 
@@ -222,7 +232,12 @@ void Scrobbler::httpDone(bool errors)
 {
 	if (errors)
 	{
-		qDebug("Scrobbler : Connection error");
+		qDebug("Scrobbler : Connection error!");
+		m_lasterror =  tr("General connection error!");
+		if (m_http->error() == QHttp::ProxyAuthenticationRequiredError)
+		{
+			m_lasterror = tr("Connection error: wrong proxy data!");
+		}
 	}
 	else
 	{

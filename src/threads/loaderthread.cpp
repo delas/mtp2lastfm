@@ -110,7 +110,17 @@ void LoaderThread::run()
 
 	/**************************************************************************/
 	/* Checking previous versions */
-	// No previous version! :)
+	if (DBConfig::get("DB_VERSION").value() == "1.0")
+	{
+		emit updateProgress(tr("Updating database!"), 55);
+		// from this to 1.1, yust the proxy
+		DBConfig::get("PROXY_USAGE").value("false");
+		DBConfig::get("PROXY_HOST").value("");
+		DBConfig::get("PROXY_PORT").value("");
+		DBConfig::get("PROXY_USERNAME").value("");
+		DBConfig::get("PROXY_PASSWORD").value("");
+		DBConfig::get("DB_VERSION").value("1.1");
+	}
 
 	emit updateProgress(tr("Application loaded!"), 100);
 

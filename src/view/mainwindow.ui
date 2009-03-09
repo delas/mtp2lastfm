@@ -130,15 +130,13 @@
      <x>0</x>
      <y>0</y>
      <width>626</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="actionSetAuthenticationData"/>
-    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menu_Actions">
@@ -148,7 +146,14 @@
     <addaction name="actionRefreshLists"/>
     <addaction name="actionScrobble"/>
    </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionSetAuthenticationData"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Edit"/>
    <addaction name="menu_Actions"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -198,10 +203,13 @@
   <action name="actionSetAuthenticationData">
    <property name="icon">
     <iconset resource="../resources/resources.qrc">
-     <normaloff>:/icon/user.png</normaloff>:/icon/user.png</iconset>
+     <normaloff>:/icon/preferences.png</normaloff>:/icon/preferences.png</iconset>
    </property>
    <property name="text">
-    <string>Set au&amp;thentication data</string>
+    <string>&amp;Preferences</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="actionExit">
