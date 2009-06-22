@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/icon" >
+        <file>updates.png</file>
+        <file>device.png</file>
+        <file>refresh.png</file>
+        <file>lastfm.png</file>
+        <file>quit.png</file>
+        <file>preferences.png</file>
+    </qresource>
+</RCC>
