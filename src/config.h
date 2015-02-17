@@ -1,54 +1,28 @@
-/*
- * config.h -- project configuration file
- *
- * Author: Andrea Burattin (http://www.delas.it)
- * Copyright (C) 2008  Andrea Burattin
- *
- * $Id$
- */
+#ifndef CONFIG_H
+#define CONFIG_H
 
-/*
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston,
- *                   MA  02111-1307, USA.
- */
-
-#include <string>
-#include "autoconfig.h"
-
-using std::string;
+#include <QString>
 
 /** The client identifier */
-const string CLIENT_ID = "mtp";
+const QString CLIENT_ID = "mtp";
+//const QString CLIENT_ID = "tst";
 
 /** The current client version */
-const string CLIENT_VERSION = VERSION;
+const QString CLIENT_VERSION = "1.1-alpha";
+//const QString CLIENT_VERSION = "1.0";
 
-/** The user agent used for the cURL calls */
-const string USER_AGENT =
-"Mozilla/5.0 (X11; U; Linux i686; it; rv:1.9b5) Gecko/2008050509 Firefox/3.0b5";
-
-/** Average song length (used to simulate the "listening") */
-const int AVG_SONG_LENGTH = 130; /* seconds */
+/** The URL to check for new version */
+const QString VERSION_CHECKER_URL =
+		"http://www.delas.it/public/projects/mtp2lastfm/last_release.php";
 
 /** The url for the Last.fm handshake */
-const string LASTFM_HANDSHAKE =
-     "http://post.audioscrobbler.com/?hs=true&p=1.2.1&c=%s&v=%s&u=%s&t=%s&a=%s";
+const QString LASTFM_HANDSHAKE = "http://post.audioscrobbler.com/";
+/** The url for the Libre.fm handshake */
+const QString LIBREFM_HANDSHAKE = "http://turtle.libre.fm/";
 
-/** The path for the mtp2lastfm.xsd */
-const string MTP2LASTFM_XSD_URI =
-                         "http://mtp2lastfm.sourceforge.net/xsd/mtp2lastfm.xsd";
+/** Parameters of the Last.fm handshaking */
+const QString LASTFM_HANDSHAKE_PARAMS =
+		"?hs=true&p=1.2.1&c=%1&v=%2&u=%3&t=%4&a=%5";
 
 /** All the possible Last.fm response values */
 class lastfm_responses
@@ -65,3 +39,5 @@ class lastfm_responses
 	/** General error */
 	static const int FAILED  = 5;
 };
+
+#endif // CONFIG_H
